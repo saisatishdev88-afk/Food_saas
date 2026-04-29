@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BistroFlow Delivery Staff</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e6e8ea",
+                        "background": "#f5f6f7",
+                        "on-secondary-fixed": "#00480f",
+                        "primary-fixed": "#ff7949",
+                        "secondary": "#006b1b",
+                        "secondary-fixed-dim": "#83e881",
+                        "on-secondary": "#d1ffc8",
+                        "on-secondary-fixed-variant": "#00691a",
+                        "on-secondary-container": "#005e17",
+                        "on-error-container": "#570008",
+                        "primary": "#a63300",
+                        "on-tertiary-fixed-variant": "#003b67",
+                        "surface-variant": "#dadddf",
+                        "primary-container": "#ff7949",
+                        "secondary-container": "#91f78e",
+                        "surface-dim": "#d1d5d7",
+                        "secondary-dim": "#005d16",
+                        "tertiary": "#005e9f",
+                        "primary-fixed-dim": "#f7652f",
+                        "on-tertiary-container": "#003258",
+                        "error": "#b31b25",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#595c5d",
+                        "on-primary-fixed": "#000000",
+                        "outline-variant": "#abadae",
+                        "surface": "#f5f6f7",
+                        "on-primary-fixed-variant": "#551600",
+                        "error-dim": "#9f0519",
+                        "inverse-on-surface": "#9b9d9e",
+                        "tertiary-container": "#70b5ff",
+                        "secondary-fixed": "#91f78e",
+                        "tertiary-fixed": "#70b5ff",
+                        "surface-container-high": "#e0e3e4",
+                        "surface-bright": "#f5f6f7",
+                        "on-error": "#ffefee",
+                        "tertiary-fixed-dim": "#4ca8ff",
+                        "on-background": "#2c2f30",
+                        "on-primary-container": "#451000",
+                        "on-tertiary-fixed": "#001930",
+                        "surface-container-low": "#eff1f2",
+                        "tertiary-dim": "#00528b",
+                        "surface-tint": "#a63300",
+                        "primary-dim": "#922c00",
+                        "surface-container-highest": "#dadddf",
+                        "error-container": "#fb5151",
+                        "inverse-surface": "#0c0f10",
+                        "on-primary": "#ffefeb",
+                        "on-tertiary": "#edf3ff",
+                        "on-surface": "#2c2f30",
+                        "inverse-primary": "#fe6a34",
+                        "outline": "#757778"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+<!-- SideNavBar (The Anchor & Blueprint) -->
+<aside class="hidden md:flex flex-col h-screen w-72 bg-[#eff1f2] py-8 px-4 gap-2 shrink-0">
+<div class="px-6 mb-10">
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold text-[#a63300] text-2xl tracking-tighter">The Atelier</h1>
+<p class="font-['Public_Sans'] text-xs uppercase tracking-wider text-on-surface-variant mt-1">Central Kitchen</p>
+</div>
+<nav class="flex flex-col gap-2 grow">
+<!-- Active State: My Orders (Dashboard equivalent for staff) -->
+<a class="flex items-center gap-4 bg-white text-[#a63300] rounded-full px-6 py-4 shadow-sm active:scale-98 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider font-bold">My Orders</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] px-6 py-4 hover:bg-white/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">History</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] px-6 py-4 hover:bg-white/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Profile</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-outline-variant/10">
+<a class="flex items-center gap-4 text-[#2c3030] px-6 py-4 hover:bg-white/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Help Center</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] px-6 py-4 hover:bg-white/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar (The Anchor) -->
+<header class="flex justify-between items-center w-full px-8 h-20 shrink-0 bg-[#f5f6f7] shadow-[0px_20px_40px_rgba(44,47,48,0.06)] z-10">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h2 class="font-headline font-extrabold text-2xl text-on-background tracking-tight">Active Deliveries</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex bg-surface-container-low px-4 py-2 rounded-full items-center gap-2">
+<span class="material-symbols-outlined text-primary scale-75" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">On Duty: Sector 7A</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="notifications">notifications</span>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="portrait of a professional delivery courier wearing a clean uniform and smiling in a modern urban environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYMmr74xcaqFhyFr27x1lgViOR48RiLBz9IdrgcH4DlsnN9SumYYOJC3n2u1TVT8tk100W1vEfl_hPfSESUxr1VO6OVuz24XBPZ57Jjdoea1fdGfMWtHDJqfVCd8EfFZ57STbNSH9vbbs_ThK_mkT1rt29BdGM4xDRO5CioR7U2d-d5Bkl_z7TdpJigYmBF3vFPEpHKTcLReQFGq48CAnZciobohAMr7-8gTlPTp7Fw47aVDGJnV4v0V7cs9Mw7gOm9bz5H69g5vU"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
+<!-- Quick Stats Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] flex items-center justify-between group hover:bg-primary-container transition-colors duration-300">
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant group-hover:text-on-primary-container">Pending</p>
+<p class="font-headline text-3xl font-black text-on-surface group-hover:text-on-primary-container">04</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-full group-hover:bg-white/20">
+<span class="material-symbols-outlined text-primary group-hover:text-white" data-icon="pending_actions">pending_actions</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] flex items-center justify-between group hover:bg-secondary-container transition-colors duration-300">
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant group-hover:text-on-secondary-container">In Transit</p>
+<p class="font-headline text-3xl font-black text-on-surface group-hover:text-on-secondary-container">02</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-full group-hover:bg-white/20">
+<span class="material-symbols-outlined text-secondary group-hover:text-white" data-icon="local_shipping">local_shipping</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] flex items-center justify-between group hover:bg-tertiary-container transition-colors duration-300">
+<div>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant group-hover:text-on-tertiary-container">Completed</p>
+<p class="font-headline text-3xl font-black text-on-surface group-hover:text-on-tertiary-container">12</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-full group-hover:bg-white/20">
+<span class="material-symbols-outlined text-tertiary group-hover:text-white" data-icon="task_alt">task_alt</span>
+</div>
+</div>
+</section>
+<!-- Assigned Orders List -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-2">
+<h3 class="font-headline font-bold text-xl text-on-surface">Assigned Orders</h3>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-lg" data-icon="sort">sort</span> Sort by Priority
+                    </button>
+</div>
+<!-- Order Card 1: Out for Delivery -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(44,47,48,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-40 md:h-auto shrink-0 relative">
+<img alt="Gourmet Burger" class="w-full h-full object-cover" data-alt="Close up of a premium gourmet burger with melting cheese and fresh ingredients in a professional kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD78XOLmwGnqVKq41p8M_Foo1tHSG1Rdzc6hL0W6LtNvO2REKWUtBcijn3VMdMiE_IgRguQZZ3NnFGDOiYT5vdwHMoO4uUS--hWXHpfLOiXNnCkHVNoPf8qln85B0x42Q_PqjVhB9UAz9Pl0q7iRpMXvcOh6ID4Np48CvTq5WXfUqYvGLpuJ_aY_INum2r3h4G1ZJ87m5_Z7cTx4EZ7uL_QxVLVXdebKjL4WCR8NqtJr7jtry65Giz7jAzNmhwl9-_Npy2J7d2RE4w"/>
+<div class="absolute top-4 left-4 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded tracking-tighter uppercase">Flash Delivery</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between gap-4">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<p class="text-primary font-black font-headline text-lg">#BF-8902</p>
+<h4 class="font-bold text-xl text-on-surface mt-1">Jonathan Wick</h4>
+<div class="flex items-center gap-2 text-on-surface-variant mt-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">42 Wallaby Way, Sydney CBD</span>
+</div>
+</div>
+<div class="bg-tertiary-container text-on-tertiary-container px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-lg animate-pulse" data-icon="directions_bike">directions_bike</span>
+                                Out for Delivery
+                            </div>
+</div>
+<div class="flex items-center justify-between border-t border-surface-container pt-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container flex items-center justify-center text-[10px] font-bold">3x</div>
+<span class="text-sm font-medium text-on-surface-variant ml-4">Gourmet Burger, Truffle Fries...</span>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-8 py-3 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                                View Details
+                            </button>
+</div>
+</div>
+</div>
+<!-- Order Card 2: Assigned -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(44,47,48,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-40 md:h-auto shrink-0 relative">
+<img alt="Artisan Pizza" class="w-full h-full object-cover" data-alt="hot artisan pizza with bubbling mozzarella and fresh basil leaves coming out of a wood-fired oven" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcqJXzYEan9GqDoF2RT6uS2ZSx9GDBex_Lbjw8xJ_pzK_ivcDgjCMuzkPiEDaACzkd8LImHruQGAjiso-CNOS3gx81L9OQKraDKjO7b8rme6VkNL7jia9911JztIERKro6cLrlysRVaf_B6GmeqEPdH_iBuMcwbt_FcRoxr_dFMm2f11QE6R9yTUng_Hk-gq-K3Fp490nryqyv-cyyjLd9fLLeWa9Gr7_foDPeUzm5FmD1viAvMgxDnNdjnlxmBc2wiJQZ5UaP9mc"/>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between gap-4">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<p class="text-primary font-black font-headline text-lg">#BF-8915</p>
+<h4 class="font-bold text-xl text-on-surface mt-1">Sarah Connor</h4>
+<div class="flex items-center gap-2 text-on-surface-variant mt-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">73 SkyNet Blvd, Tech District</span>
+</div>
+</div>
+<div class="bg-surface-container-highest text-on-surface-variant px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="inventory_2">inventory_2</span>
+                                Assigned
+                            </div>
+</div>
+<div class="flex items-center justify-between border-t border-surface-container pt-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container flex items-center justify-center text-[10px] font-bold">1x</div>
+<span class="text-sm font-medium text-on-surface-variant ml-4">Neapolitan Pizza</span>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-8 py-3 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                                View Details
+                            </button>
+</div>
+</div>
+</div>
+<!-- Order Card 3: Assigned -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_20px_40px_rgba(44,47,48,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col md:flex-row">
+<div class="w-full md:w-48 h-40 md:h-auto shrink-0 relative">
+<img alt="Healthy Bowl" class="w-full h-full object-cover" data-alt="colorful healthy buddha bowl with avocado, quinoa, and fresh vegetables in a bright clean setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn9NUfgqTnkiO9Xgij2AlNGAitdXZ3zLxdGyxMz_G6-jd7Adi_qpfbsDJxKbD5FZl_sDuMID6SKOoUWwdbRw3wnEwP20m-TDwGQIl63ieoV4wHUtsHGHpAaddRmiA8-mcQT1JgXVCud1guBf1_LlYRci8OMEQXmyVWKot0DtngfQ5BqDGmuUX19aSikP8qqthatfE5RE_uJmGFUgVBSuqBBhbMepJkHxkOzAx41NTOC5LPsbugTW5ReHYR88-jnClay3s28HdF0bA"/>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between gap-4">
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<p class="text-primary font-black font-headline text-lg">#BF-8921</p>
+<h4 class="font-bold text-xl text-on-surface mt-1">Bruce Wayne</h4>
+<div class="flex items-center gap-2 text-on-surface-variant mt-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">1007 Mountain Drive, Gotham Heights</span>
+</div>
+</div>
+<div class="bg-surface-container-highest text-on-surface-variant px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="inventory_2">inventory_2</span>
+                                Assigned
+                            </div>
+</div>
+<div class="flex items-center justify-between border-t border-surface-container pt-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container flex items-center justify-center text-[10px] font-bold">2x</div>
+<span class="text-sm font-medium text-on-surface-variant ml-4">Quinoa Bowl, Green Juice</span>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-8 py-3 rounded-full font-bold text-sm active:scale-95 transition-transform shadow-lg shadow-primary/20">
+                                View Details
+                            </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Floating Action Button: Suppressed on Details as per instruction, but relevant for Dashboard/List -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-primary/40 active:scale-90 transition-transform md:hidden">
+<span class="material-symbols-outlined text-3xl" data-icon="add_road">add_road</span>
+</button>
+</main>
+<!-- BottomNavBar for Mobile View (The Pivot) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-white shadow-[0px_-10px_30px_rgba(0,0,0,0.05)] flex items-center justify-around px-6 z-20">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">My Orders</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">History</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</button>
+</nav>
+</body></html>

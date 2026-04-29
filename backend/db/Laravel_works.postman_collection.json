@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "b0708183-1305-461b-9dc8-62ed6a7a7657",
+		"name": "Laravel_works",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30550876",
+		"_collection_link": "https://speeding-astronaut-570871.postman.co/workspace/My-Workspace~09b82130-9f53-4ee1-87d7-2b682e805c57/collection/30550876-b0708183-1305-461b-9dc8-62ed6a7a7657?action=share&source=collection_link&creator=30550876"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{vault:api_pwd}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "apiadmin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Sai satish test",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "saisatishdevtest88@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "mobile",
+							"value": "9948899376",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{laravel_works}}register",
+					"host": [
+						"{{laravel_works}}register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rise_ticket",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{vault:api_pwd}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "apiadmin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "subject",
+							"value": "Design issues",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "I need some help in react design in home page",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{laravel_works}}rise_ticket",
+					"host": [
+						"{{laravel_works}}rise_ticket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chat",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "ticket_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "yes i wil help",
+							"type": "text"
+						},
+						{
+							"key": "user_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "admin_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/chat",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"chat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Support_tickets",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{vault:api_pwd}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "apiadmin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/tickets?user_id=3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"tickets"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ticket_details",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{vault:api_pwd}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "apiadmin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/ticket_details?ticket_id=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ticket_details"
+					],
+					"query": [
+						{
+							"key": "ticket_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "laravel_works\n",
+			"value": "http://127.0.0.1:8000/api/",
+			"type": "string"
+		}
+	]
+}

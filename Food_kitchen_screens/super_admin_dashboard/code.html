@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BistroFlow Super Admin</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e6e8ea",
+                        "background": "#f5f6f7",
+                        "on-secondary-fixed": "#00480f",
+                        "primary-fixed": "#ff7949",
+                        "secondary": "#006b1b",
+                        "secondary-fixed-dim": "#83e881",
+                        "on-secondary": "#d1ffc8",
+                        "on-secondary-fixed-variant": "#00691a",
+                        "on-secondary-container": "#005e17",
+                        "on-error-container": "#570008",
+                        "primary": "#a63300",
+                        "on-tertiary-fixed-variant": "#003b67",
+                        "surface-variant": "#dadddf",
+                        "primary-container": "#ff7949",
+                        "secondary-container": "#91f78e",
+                        "surface-dim": "#d1d5d7",
+                        "secondary-dim": "#005d16",
+                        "tertiary": "#005e9f",
+                        "primary-fixed-dim": "#f7652f",
+                        "on-tertiary-container": "#003258",
+                        "error": "#b31b25",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#595c5d",
+                        "on-primary-fixed": "#000000",
+                        "outline-variant": "#abadae",
+                        "surface": "#f5f6f7",
+                        "on-primary-fixed-variant": "#551600",
+                        "error-dim": "#9f0519",
+                        "inverse-on-surface": "#9b9d9e",
+                        "tertiary-container": "#70b5ff",
+                        "secondary-fixed": "#91f78e",
+                        "tertiary-fixed": "#70b5ff",
+                        "surface-container-high": "#e0e3e4",
+                        "surface-bright": "#f5f6f7",
+                        "on-error": "#ffefee",
+                        "tertiary-fixed-dim": "#4ca8ff",
+                        "on-background": "#2c2f30",
+                        "on-primary-container": "#451000",
+                        "on-tertiary-fixed": "#001930",
+                        "surface-container-low": "#eff1f2",
+                        "tertiary-dim": "#00528b",
+                        "surface-tint": "#a63300",
+                        "primary-dim": "#922c00",
+                        "surface-container-highest": "#dadddf",
+                        "error-container": "#fb5151",
+                        "inverse-surface": "#0c0f10",
+                        "on-primary": "#ffefeb",
+                        "on-tertiary": "#edf3ff",
+                        "on-surface": "#2c2f30",
+                        "inverse-primary": "#fe6a34",
+                        "outline": "#757778"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Public Sans', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="hidden md:flex flex-col h-screen w-72 bg-[#eff1f2] dark:bg-slate-950 py-8 px-4 gap-2 shrink-0">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+</div>
+<div>
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold text-[#a63300] text-xl">The Atelier</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Central Kitchen</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-4 bg-white dark:bg-slate-800 text-[#a63300] dark:text-[#FF6B35] rounded-full px-6 py-4 shadow-sm active:scale-98 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider font-semibold">Overview</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Restaurants</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="soup_kitchen">subscriptions</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Subscriptions</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Analytics</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Staff Manager</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 border-t border-outline-variant/10 pt-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-xl shadow-lg mb-4 active:scale-95 transition-transform">
+                New Order
+            </button>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Help Center</span>
+</a>
+<a class="flex items-center gap-4 text-[#2c3030] dark:text-slate-400 px-6 py-4 hover:bg-white/50 rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-['Public_Sans'] text-sm uppercase tracking-wider">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar Component -->
+<header class="flex justify-between items-center w-full px-8 h-20 bg-[#f5f6f7] dark:bg-slate-900 shadow-[0px_20px_40px_rgba(44,47,48,0.06)] z-10 sticky top-0">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#a63300] dark:text-[#FF6B35] tracking-tighter">Culinary Atelier</span>
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search systems..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden xl:flex items-center gap-6">
+<a class="text-[#a63300] dark:text-[#FF6B35] border-b-2 border-[#FF6B35] pb-1 font-['Plus_Jakarta_Sans'] font-bold tracking-tight" href="#">Dashboard</a>
+<a class="text-[#2c3030] dark:text-slate-400 font-medium font-['Plus_Jakarta_Sans'] tracking-tight hover:text-[#FF6B35] transition-colors duration-200" href="#">Orders</a>
+<a class="text-[#2c3030] dark:text-slate-400 font-medium font-['Plus_Jakarta_Sans'] tracking-tight hover:text-[#FF6B35] transition-colors duration-200" href="#">Kitchen</a>
+<a class="text-[#2c3030] dark:text-slate-400 font-medium font-['Plus_Jakarta_Sans'] tracking-tight hover:text-[#FF6B35] transition-colors duration-200" href="#">Inventory</a>
+</nav>
+<div class="h-6 w-[1px] bg-outline-variant/30 hidden xl:block"></div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="ml-2 ring-2 ring-primary/10 rounded-full p-0.5">
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover" data-alt="professional male executive portrait in a modern glass office with warm sunset lighting and blurred city background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClI62Q3ubmBlBES_AK5FbJPmAX6xW8lbaveLxbtmPymj-iH4CicqDJaP0tAgVtofRuZMF-Gt17KS4Ww7VAbuHj8LyYNJ6DZXZcrbkNvfQbfRltc6lIfEXoOCYlh8NgMrJ1cZhRl1wYBPdCxhh6Ys_OthBW8-t16mlYTo_eeLepHiZPjydZbUyb8uzMon1ni-3Fp3QeMGMufIl30Gj7VzZC8BpUpN8SinGGMpiE8-VrOVgN37Fgm4I2tr3L5kLyfe9FEWC1hC6h9ho"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-8 lg:p-12 max-w-[1600px] mx-auto w-full space-y-12">
+<!-- Page Header -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-2">Platform Overview</h2>
+<p class="text-on-surface-variant text-lg">System-wide performance and restaurant growth metrics.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-4 bg-surface-container-highest rounded-xl font-bold flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xl">download</span>
+                        Export Data
+                    </button>
+<button class="px-8 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                        Manage Subscriptions
+                    </button>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Total Restaurants -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] relative overflow-hidden group">
+<div class="relative z-10">
+<span class="text-on-surface-variant font-bold text-xs uppercase tracking-widest block mb-4">Total Restaurants</span>
+<div class="flex items-baseline gap-4">
+<span class="text-6xl font-extrabold tracking-tighter">1,284</span>
+<span class="text-secondary font-bold text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12%
+                            </span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+</div>
+<!-- Total Revenue -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] relative overflow-hidden group">
+<div class="relative z-10">
+<span class="text-on-surface-variant font-bold text-xs uppercase tracking-widest block mb-4">Total Revenue (MRR)</span>
+<div class="flex items-baseline gap-4">
+<span class="text-6xl font-extrabold tracking-tighter">$42.8k</span>
+<span class="text-secondary font-bold text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +8%
+                            </span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+</div>
+<!-- Active Subscriptions -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] relative overflow-hidden group">
+<div class="relative z-10">
+<span class="text-on-surface-variant font-bold text-xs uppercase tracking-widest block mb-4">Active Subscriptions</span>
+<div class="flex items-baseline gap-4">
+<span class="text-6xl font-extrabold tracking-tighter">942</span>
+<span class="text-primary font-bold text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">analytics</span> 73% Conversion
+                            </span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+</section>
+<!-- Main Data Section: Recent Restaurants -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-2xl font-bold tracking-tight">Recent Restaurants</h3>
+<button class="text-primary font-bold hover:underline">View All Registry</button>
+</div>
+<div class="bg-surface-container-low rounded-xl overflow-hidden p-1">
+<table class="w-full text-left border-separate border-spacing-y-4 px-4">
+<thead>
+<tr class="text-on-surface-variant uppercase text-xs font-bold tracking-widest">
+<th class="pb-2 px-4">Restaurant Details</th>
+<th class="pb-2 px-4">Joined Date</th>
+<th class="pb-2 px-4">Subscription Plan</th>
+<th class="pb-2 px-4">Status</th>
+<th class="pb-2 px-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody>
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-lowest transition-all rounded-xl">
+<td class="bg-surface-container-lowest group-hover:bg-transparent rounded-l-xl py-5 px-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Restaurant logo" class="w-full h-full object-cover" data-alt="vibrant street food stall with glowing neon signs and rustic wooden textures at night in a busy asian market" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJdR6DNFc-ltgjQLC_ElM4pIIrzy7irdVcnaSfaGvdapJPGKcLN3gOZgY0uqqXsVVd5toqrOe2WuJxO18yJ4aERn6qiinzx8X4b9PS4g_EmkG42d5BIeeSwbsyXy8RFBgyb_XDmRK8d0gzunBAvSGIFHWpQdd_tMSE-DcOy8vdJTNrI0kvXTlWDdszxLQ40EzlyMbbTy7WF2WW1_5KJn5pF9EqrzcoWYcrhuxT_OsTI0QxdA9zhLxSLUVSKQOOafi7KGnkpIpdDz8"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Le Petit Bistro</p>
+<p class="text-sm text-on-surface-variant">Paris, FR • ID: 8849</p>
+</div>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<p class="text-on-surface font-medium">Oct 12, 2023</p>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">Enterprise</span>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="text-sm font-bold text-secondary">Active</span>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4 text-right rounded-r-xl">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-lowest transition-all rounded-xl">
+<td class="bg-surface-container-lowest group-hover:bg-transparent rounded-l-xl py-5 px-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Restaurant logo" class="w-full h-full object-cover" data-alt="minimalist modern restaurant interior with sleek white furniture and large floor-to-ceiling windows overlooking a green garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbgG_tttbX9sNjDNDdNzWH6ODz-74idBcxkpH7-JxlzW-6wtrap0J7BKCDXEqPGMgxCjOqumJZSnJgo-4yhBGkMIbwuLqlzSBv5mGp-v1sB7J6diHM4PfGoJlHd5LaVb9aA4NKHyk1bEkkKaEHZATJDaEo_wi_fkUPFpeEkwebcQNH5cKvQDkT_l6QIAW5l7eQ19yO3oujchBG_-GeEA0yf3Qf34kOQSbBFXPWzvq2Y1CV4cu0e-gRu6ijHZ1-4ZIc4mfkwBO_2Ew"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Sakura Sushi</p>
+<p class="text-sm text-on-surface-variant">Tokyo, JP • ID: 9021</p>
+</div>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<p class="text-on-surface font-medium">Oct 15, 2023</p>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<span class="bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">Pro</span>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary-container"></div>
+<span class="text-sm font-bold text-tertiary">Preparing</span>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4 text-right rounded-r-xl">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-lowest transition-all rounded-xl">
+<td class="bg-surface-container-lowest group-hover:bg-transparent rounded-l-xl py-5 px-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden">
+<img alt="Restaurant logo" class="w-full h-full object-cover" data-alt="industrial loft style brewery with large steel tanks and cozy leather booths under warm pendant lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjpLdqHl1A5RqJRhDxElcaHr_AU-bHhGJ9dRqxVsVTZS_PHopcJAokGR6D-Nhp1N7YrrN6l2VfLZaYPZND2n17py55MBgpc8CgAes0jSb36ayZsp-Gi1CvdllqfWSAaS17DT7PdkO84p5mi307ku4Mhkn9LgXIMgOHbsg87JTMptZ5rZuludps-y0u1R9lOMwJ_ETSvn1PFGHkA0ef5uPXis647cgFzu3p2rHKYMgqOGLGTy4tIr_9QKD-yuvJY6whAcil34f8iQE"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">The Grain Loft</p>
+<p class="text-sm text-on-surface-variant">London, UK • ID: 1142</p>
+</div>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<p class="text-on-surface font-medium">Oct 16, 2023</p>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-sm">Free Trial</span>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-sm font-bold text-error">Trial Expired</span>
+</div>
+</td>
+<td class="bg-surface-container-lowest group-hover:bg-transparent py-5 px-4 text-right rounded-r-xl">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Bottom Bento Row -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+<!-- System Health -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-xl shadow-[0px_20px_40px_rgba(44,47,48,0.06)] flex flex-col justify-between h-80">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-xl font-bold tracking-tight mb-1">System Global Performance</h4>
+<p class="text-on-surface-variant text-sm">Response times across all kitchen nodes.</p>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-secondary-container/30 rounded-full">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-[10px] font-black uppercase text-secondary">Optimal</span>
+</div>
+</div>
+<div class="flex items-end gap-1 h-32 w-full">
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[40%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[55%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[45%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[70%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[85%]"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-[95%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[80%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[60%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[75%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[90%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[50%]"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm h-[40%]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase tracking-widest pt-4 border-t border-outline-variant/10">
+<span>Last 24 Hours</span>
+<span>Global Avg: 42ms</span>
+</div>
+</div>
+<!-- Support Queue -->
+<div class="bg-[#a63300] text-on-primary p-8 rounded-xl shadow-lg flex flex-col justify-between h-80 relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="text-xl font-bold tracking-tight mb-1">Active Alerts</h4>
+<p class="text-white/70 text-sm">Priority escalations from VIP accounts.</p>
+</div>
+<div class="relative z-10 space-y-4">
+<div class="flex items-center gap-4 bg-white/10 p-3 rounded-lg backdrop-blur-md">
+<span class="material-symbols-outlined text-white">warning</span>
+<div>
+<p class="text-sm font-bold">POS Sync Error</p>
+<p class="text-xs text-white/60">Le Petit Bistro • 4m ago</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white/10 p-3 rounded-lg backdrop-blur-md">
+<span class="material-symbols-outlined text-white">mail</span>
+<div>
+<p class="text-sm font-bold">Plan Upgrade Request</p>
+<p class="text-xs text-white/60">Sakura Sushi • 22m ago</p>
+</div>
+</div>
+</div>
+<button class="relative z-10 w-full py-3 bg-white text-primary font-bold rounded-lg text-sm active:scale-95 transition-transform">
+                        Open Support Desk
+                    </button>
+<!-- Background Decoration -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest shadow-[0px_-4px_20px_rgba(44,47,48,0.06)] flex justify-around items-center px-4 z-50">
+<a class="flex flex-col items-center gap-1 text-[#a63300]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold uppercase">Overview</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="text-[10px] font-bold uppercase">Vendors</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<span class="text-[10px] font-bold uppercase">Plans</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase">Account</span>
+</a>
+</nav>
+</body></html>

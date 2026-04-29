@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f6f7;
+  --foreground: #2c2f30;
+}
+  
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Public Sans', sans-serif;
+  --font-headline: 'Plus Jakarta Sans', sans-serif;
+  
+  --color-surface-container: #e6e8ea;
+  --color-on-secondary-fixed: #00480f;
+  --color-primary-fixed: #ff7949;
+  --color-secondary: #006b1b;
+  --color-secondary-fixed-dim: #83e881;
+  --color-on-secondary: #d1ffc8;
+  --color-on-secondary-fixed-variant: #00691a;
+  --color-on-secondary-container: #005e17;
+  --color-on-error-container: #570008;
+  --color-primary: #a63300;
+  --color-on-tertiary-fixed-variant: #003b67;
+  --color-surface-variant: #dadddf;
+  --color-primary-container: #ff7949;
+  --color-secondary-container: #91f78e;
+  --color-surface-dim: #d1d5d7;
+  --color-secondary-dim: #005d16;
+  --color-tertiary: #005e9f;
+  --color-primary-fixed-dim: #f7652f;
+  --color-on-tertiary-container: #003258;
+  --color-error: #b31b25;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface-variant: #595c5d;
+  --color-on-primary-fixed: #000000;
+  --color-outline-variant: #abadae;
+  --color-surface: #f5f6f7;
+  --color-on-primary-fixed-variant: #551600;
+  --color-error-dim: #9f0519;
+  --color-inverse-on-surface: #9b9d9e;
+  --color-tertiary-container: #70b5ff;
+  --color-secondary-fixed: #91f78e;
+  --color-tertiary-fixed: #70b5ff;
+  --color-surface-container-high: #e0e3e4;
+  --color-surface-bright: #f5f6f7;
+  --color-on-error: #ffefee;
+  --color-tertiary-fixed-dim: #4ca8ff;
+  --color-on-background: #2c2f30;
+  --color-on-primary-container: #451000;
+  --color-on-tertiary-fixed: #001930;
+  --color-surface-container-low: #eff1f2;
+  --color-tertiary-dim: #00528b;
+  --color-surface-tint: #a63300;
+  --color-primary-dim: #922c00;
+  --color-surface-container-highest: #dadddf;
+  --color-error-container: #fb5151;
+  --color-inverse-surface: #0c0f10;
+  --color-on-primary: #ffefeb;
+  --color-on-tertiary: #edf3ff;
+  --color-on-surface: #2c2f30;
+  --color-inverse-primary: #fe6a34;
+  --color-outline: #757778;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+

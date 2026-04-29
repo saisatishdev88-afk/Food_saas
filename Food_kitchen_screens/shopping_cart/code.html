@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Your Cart | Culinary Atelier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Public+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#005e9f",
+                        "on-primary-container": "#451000",
+                        "on-tertiary-container": "#003258",
+                        "tertiary-dim": "#00528b",
+                        "on-secondary-container": "#005e17",
+                        "outline": "#757778",
+                        "surface-dim": "#d1d5d7",
+                        "background": "#f5f6f7",
+                        "error": "#b31b25",
+                        "primary-fixed": "#ff7949",
+                        "surface-container": "#e6e8ea",
+                        "primary": "#a63300",
+                        "primary-fixed-dim": "#f7652f",
+                        "inverse-on-surface": "#9b9d9e",
+                        "on-secondary": "#d1ffc8",
+                        "secondary-container": "#91f78e",
+                        "on-secondary-fixed-variant": "#00691a",
+                        "surface-tint": "#a63300",
+                        "primary-dim": "#922c00",
+                        "tertiary-fixed": "#70b5ff",
+                        "surface": "#f5f6f7",
+                        "on-primary": "#ffefeb",
+                        "tertiary-container": "#70b5ff",
+                        "outline-variant": "#abadae",
+                        "surface-variant": "#dadddf",
+                        "surface-container-highest": "#dadddf",
+                        "on-error": "#ffefee",
+                        "inverse-surface": "#0c0f10",
+                        "inverse-primary": "#fe6a34",
+                        "secondary-fixed-dim": "#83e881",
+                        "on-surface-variant": "#595c5d",
+                        "surface-container-low": "#eff1f2",
+                        "surface-container-high": "#e0e3e4",
+                        "error-dim": "#9f0519",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f5f6f7",
+                        "on-primary-fixed-variant": "#551600",
+                        "tertiary-fixed-dim": "#4ca8ff",
+                        "secondary": "#006b1b",
+                        "on-tertiary": "#edf3ff",
+                        "on-error-container": "#570008",
+                        "on-secondary-fixed": "#00480f",
+                        "primary-container": "#ff7949",
+                        "secondary-fixed": "#91f78e",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#2c2f30",
+                        "on-tertiary-fixed-variant": "#003b67",
+                        "on-tertiary-fixed": "#001930",
+                        "secondary-dim": "#005d16",
+                        "on-surface": "#2c2f30",
+                        "error-container": "#fb5151"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Public Sans', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f5f6f7] dark:bg-zinc-950 flex justify-between items-center w-full px-8 py-5 docked full-width top-0 sticky z-40">
+<div class="text-2xl font-black text-[#FF6B35] italic">Culinary Atelier</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Menu</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Orders</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Favorites</a>
+</nav>
+<div class="flex items-center space-x-6">
+<button class="relative text-zinc-500 hover:text-[#FF6B35] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-2 -right-2 bg-primary text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">3</span>
+</button>
+<button class="text-zinc-500 hover:text-[#FF6B35] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Items Section -->
+<div class="lg:col-span-8 space-y-8">
+<header class="flex items-baseline justify-between">
+<h1 class="text-4xl font-extrabold tracking-tighter text-on-surface">Your Selection</h1>
+<span class="font-label text-sm uppercase tracking-widest text-on-surface-variant font-bold">3 Items Total</span>
+</header>
+<div class="space-y-6">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col sm:flex-row gap-6 items-center group transition-all hover:bg-surface-container-low">
+<div class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Heirloom Harvest Salad" class="w-full h-full object-cover" data-alt="Close-up of a vibrant heirloom tomato salad with fresh burrata cheese, basil leaves, and balsamic glaze drizzle on a white ceramic plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDyF3lmnMpGHRG6tWzQ7dJUt6nWTCtnS_2iNo7Tm0mgX8d_fwk3t7QKxXNsgVEu5aRGWsAcK6jjIMlVgSM0yzLWPRN0oFlFyz6k_ZbCKGOwbIARAHRET5eGXzCtoucWyALcUuNCfbhREPsjVEl_kz5DcquOYThfo_yVeve-WbelfBCK5zlJ1_-S48jR9huHKJEKDDCy38tRsmnx0JOzDTRqD9lP-EVCnPGk1rwI9JrIvGw7LpSwq8URlyxRQo_qLhuCAXuRn62R8s"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-bold text-on-background tracking-tight">Heirloom Harvest Salad</h3>
+<p class="text-on-surface-variant text-sm mt-1">Farm-fresh tomatoes, burrata, basil vinaigrette</p>
+</div>
+<span class="text-lg font-black text-on-background">$18.00</span>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex items-center bg-surface-container-high rounded-full p-1">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+<span class="w-12 text-center font-bold text-on-background">1</span>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+<button class="text-error flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">delete</span>
+<span class="font-label text-[10px] font-bold uppercase tracking-widest">Remove</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col sm:flex-row gap-6 items-center group transition-all hover:bg-surface-container-low">
+<div class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Truffle Linguine" class="w-full h-full object-cover" data-alt="Exquisite truffle linguine pasta served in a deep bowl with generous shavings of black truffle and a sprinkle of fresh herbs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApAALmTc7nEVZOgCzyPWQZNAsad_t_lGVYDPaygas1Vhu03oneolZjGdqaJM4g0UFJ-BLRKGrfB7gy4JiVEp2ifjqKX1o5YMZaMXVkPqB5hMdQdSKF6IwsIVAHnrMWHE23UJYLO7GazO4AyvMHH7MH9aM6CnDN-tzFNaU_n0EWyOEh_RJV7Pv3aLhK7CULPzwaDg5SlS-EDk6xF14c80dAJYUTa5PEIWHmkBAeqpp1v5wKPebbrKmLz5nLk8BWKEqfLvdwJarQ47E"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-bold text-on-background tracking-tight">Truffle Linguine</h3>
+<p class="text-on-surface-variant text-sm mt-1">Handmade pasta, seasonal black truffle, parmesan cream</p>
+</div>
+<span class="text-lg font-black text-on-background">$34.00</span>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex items-center bg-surface-container-high rounded-full p-1">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+<span class="w-12 text-center font-bold text-on-background">1</span>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+<button class="text-error flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">delete</span>
+<span class="font-label text-[10px] font-bold uppercase tracking-widest">Remove</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl flex flex-col sm:flex-row gap-6 items-center group transition-all hover:bg-surface-container-low">
+<div class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Yuzu Meringue Tart" class="w-full h-full object-cover" data-alt="Minimalist dessert photography of a yuzu meringue tart with sharp peaks of toasted meringue and bright yellow citrus curd" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEmmzTACmJA_XUwfnACRe2sgy66UG3tYp0YwzetqeRkXr-DDv7DB-2WNal7GODiGrsWn29p2t42g9OPFPgBjY76Bry6LMkdITX18H9hlSvJuEqAusMPJyOwBlrHsoGFDj1iizVn3_45fsqBL9CqBabkjt6mwWzN5fGnGNiCWK-wAslmuO558Rh7UKE3K7Wh_J08z8dTRjBqkWR6A69eyEwVipEOPOoU5h7pDrEqs_z92SBarlSZc8XNkaPMiKbssjhToJhxXb08LM"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-xl font-bold text-on-background tracking-tight">Yuzu Meringue Tart</h3>
+<p class="text-on-surface-variant text-sm mt-1">Crisp shortcrust, yuzu curd, toasted swiss meringue</p>
+</div>
+<span class="text-lg font-black text-on-background">$14.00</span>
+</div>
+<div class="flex items-center justify-between mt-6">
+<div class="flex items-center bg-surface-container-high rounded-full p-1">
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">remove</span>
+</button>
+<span class="w-12 text-center font-bold text-on-background">1</span>
+<button class="w-10 h-10 flex items-center justify-center text-primary hover:bg-surface-container-highest rounded-full transition-colors active:scale-90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+<button class="text-error flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">delete</span>
+<span class="font-label text-[10px] font-bold uppercase tracking-widest">Remove</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Section -->
+<div class="lg:col-span-4">
+<div class="bg-surface-container-low p-8 rounded-lg sticky top-24">
+<h2 class="text-2xl font-extrabold tracking-tighter text-on-surface mb-8">Bill Summary</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-label text-xs uppercase tracking-widest font-bold">Subtotal</span>
+<span class="font-bold text-on-background">$66.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-label text-xs uppercase tracking-widest font-bold">Taxes (8%)</span>
+<span class="font-bold text-on-background">$5.28</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-label text-xs uppercase tracking-widest font-bold">Service Charge (5%)</span>
+<span class="font-bold text-on-background">$3.30</span>
+</div>
+<div class="pt-6 mt-6 border-t-2 border-surface-variant flex justify-between items-end">
+<span class="text-lg font-extrabold tracking-tighter text-on-surface">Total Amount</span>
+<span class="text-3xl font-black text-primary tracking-tighter">$74.58</span>
+</div>
+</div>
+<div class="mt-10 space-y-4">
+<button class="w-full h-14 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">
+<span>Proceed to Checkout</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="w-full h-14 bg-transparent text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Add more items</span>
+</button>
+</div>
+<div class="mt-8 p-4 bg-surface-container-lowest rounded-xl flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-2xl">local_shipping</span>
+<div>
+<p class="text-xs font-bold text-on-background uppercase tracking-widest mb-1">Estimated Preparation</p>
+<p class="text-sm text-on-surface-variant">Your order will be ready in approximately 25-30 minutes.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-10 pt-4 bg-white/90 backdrop-blur-md dark:bg-zinc-900/90 rounded-t-[2rem] shadow-[0px_-10px_40px_rgba(44,47,48,0.06)]">
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#FF6B35] text-white rounded-full px-5 py-2 transition-transform active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_basket</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Cart</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

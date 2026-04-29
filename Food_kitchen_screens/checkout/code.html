@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Culinary Atelier</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#005e9f",
+                        "on-primary-container": "#451000",
+                        "on-tertiary-container": "#003258",
+                        "tertiary-dim": "#00528b",
+                        "on-secondary-container": "#005e17",
+                        "outline": "#757778",
+                        "surface-dim": "#d1d5d7",
+                        "background": "#f5f6f7",
+                        "error": "#b31b25",
+                        "primary-fixed": "#ff7949",
+                        "surface-container": "#e6e8ea",
+                        "primary": "#a63300",
+                        "primary-fixed-dim": "#f7652f",
+                        "inverse-on-surface": "#9b9d9e",
+                        "on-secondary": "#d1ffc8",
+                        "secondary-container": "#91f78e",
+                        "on-secondary-fixed-variant": "#00691a",
+                        "surface-tint": "#a63300",
+                        "primary-dim": "#922c00",
+                        "tertiary-fixed": "#70b5ff",
+                        "surface": "#f5f6f7",
+                        "on-primary": "#ffefeb",
+                        "tertiary-container": "#70b5ff",
+                        "outline-variant": "#abadae",
+                        "surface-variant": "#dadddf",
+                        "surface-container-highest": "#dadddf",
+                        "on-error": "#ffefee",
+                        "inverse-surface": "#0c0f10",
+                        "inverse-primary": "#fe6a34",
+                        "secondary-fixed-dim": "#83e881",
+                        "on-surface-variant": "#595c5d",
+                        "surface-container-low": "#eff1f2",
+                        "surface-container-high": "#e0e3e4",
+                        "error-dim": "#9f0519",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f5f6f7",
+                        "on-primary-fixed-variant": "#551600",
+                        "tertiary-fixed-dim": "#4ca8ff",
+                        "secondary": "#006b1b",
+                        "on-tertiary": "#edf3ff",
+                        "on-error-container": "#570008",
+                        "on-secondary-fixed": "#00480f",
+                        "primary-container": "#ff7949",
+                        "secondary-fixed": "#91f78e",
+                        "on-primary-fixed": "#000000",
+                        "on-background": "#2c2f30",
+                        "on-tertiary-fixed-variant": "#003b67",
+                        "on-tertiary-fixed": "#001930",
+                        "secondary-dim": "#005d16",
+                        "on-surface": "#2c2f30",
+                        "error-container": "#fb5151"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Public Sans', sans-serif; }
+        h1, h2, h3, h4, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-[#f5f6f7] dark:bg-zinc-950 flex justify-between items-center w-full px-8 py-5 fixed top-0 z-[60] shadow-none">
+<div class="text-2xl font-black text-[#FF6B35] italic">Culinary Atelier</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Menu</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Orders</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#FF6B35] transition-colors" href="#">Favorites</a>
+</nav>
+<div class="flex items-center gap-6">
+<button class="text-zinc-500 hover:text-[#FF6B35] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="text-zinc-500 hover:text-[#FF6B35] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-8 max-w-7xl mx-auto">
+<div class="flex flex-col lg:flex-row gap-12 items-start">
+<!-- Left Side: Delivery & Payment Details -->
+<div class="w-full lg:w-2/3 space-y-12">
+<section>
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-8 text-on-background">Secure Checkout</h1>
+<!-- Delivery Details -->
+<div class="bg-surface-container-low p-8 rounded-xl space-y-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<h2 class="text-xl font-bold tracking-tight uppercase label-md text-on-surface-variant">Delivery Logistics</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-0 focus:border-b-2 focus:border-primary transition-all placeholder:text-outline" placeholder="Julian Casablancas" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Phone Number</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-0 focus:border-b-2 focus:border-primary transition-all placeholder:text-outline" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Delivery Address</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-0 focus:border-b-2 focus:border-primary transition-all placeholder:text-outline" placeholder="123 Atelier Way, Gastronomy District" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Payment Selection -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+<h2 class="text-xl font-bold tracking-tight uppercase label-md text-on-surface-variant">Settlement Method</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Credit Card -->
+<button class="group flex flex-col items-start p-6 bg-surface-container-lowest border-2 border-transparent hover:border-primary/20 focus:border-primary rounded-xl transition-all text-left shadow-[0px_4px_20px_rgba(44,47,48,0.04)]">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="credit_card">credit_card</span>
+<span class="font-bold text-lg">Bank Card</span>
+<span class="text-sm text-on-surface-variant">Visa, Mastercard, Amex</span>
+</button>
+<!-- Digital Wallet -->
+<button class="group flex flex-col items-start p-6 bg-surface-container-lowest border-2 border-primary rounded-xl transition-all text-left shadow-[0px_4px_20px_rgba(44,47,48,0.04)]">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-bold text-lg">Digital Wallet</span>
+<span class="text-sm text-on-surface-variant">Apple Pay, Google Pay</span>
+</button>
+<!-- Cash -->
+<button class="group flex flex-col items-start p-6 bg-surface-container-lowest border-2 border-transparent hover:border-primary/20 focus:border-primary rounded-xl transition-all text-left shadow-[0px_4px_20px_rgba(44,47,48,0.04)]">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="payments">payments</span>
+<span class="font-bold text-lg">On Delivery</span>
+<span class="text-sm text-on-surface-variant">Cash or Card upon arrival</span>
+</button>
+</div>
+</section>
+</div>
+<!-- Right Side: Order Summary Card -->
+<aside class="w-full lg:w-1/3 lg:sticky lg:top-32">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_20px_40px_rgba(44,47,48,0.06)] space-y-8">
+<h3 class="text-2xl font-black italic text-primary">Your Selection</h3>
+<div class="space-y-6">
+<!-- Item 1 -->
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Gourmet Bowl" class="w-full h-full object-cover" data-alt="Close-up of a vibrant healthy gourmet bowl with quinoa, avocado, and microgreens on a minimalist stone plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS6v5WPEhKqBMDe-S-HvtGy5WdzAkAO344x3GRfpoSZNT9_DvU9O59KYk9-ICsTDR5a4-gH9rChqTUOsCKPKntVQDB5EV6D1vKOnI5lEewVfEAKmFzlm2s-oRxglofZdewy52xHe7IKhd5RTJG49zmUZhl08FO2x879UOtqM6LIAI4DVXwJILh0vDc2Xbztu8mUza4SBNPKRFExk2xIkgApnrE9z4cqxPi_0JVMl18QvF2RzIum9XhFkRq7xtDzGS9Ectw-vZ0S34"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between">
+<p class="font-bold text-on-surface">Atelier Signature Bowl</p>
+<p class="font-bold text-primary">$24.00</p>
+</div>
+<p class="text-xs text-on-surface-variant uppercase tracking-wider">Qty: 1 • Extra Truffle</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Dessert" class="w-full h-full object-cover" data-alt="Exquisite chocolate fondant dessert with gold leaf garnish on a dark ceramic dish, moody soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLeH-DYTgMlBTgHwz8C4ymIWa2JL_UkNacLCuVABpO0M2xwtkoDS2-fd9smwOEKp4eTUCZY3D1HcjnOquOjEj6WELKIUAcVttLG95t1UZ6u41H1i_5NYxHJI3I_0iSW_jj5tHdvTureQbeUTiLd1OWYTvhHprc7WsmNZuhefpWUjfZQVU-wDSS-iGBKJqLBqrNaOLU8eFNz7oJ6wgPkHKTv7xHrNyJETcZTIoZT30S0aDxnCGqcfDV1OK-D8no5s_okL0KDOjSsmo"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between">
+<p class="font-bold text-on-surface">Noir Cacao Fondant</p>
+<p class="font-bold text-primary">$12.50</p>
+</div>
+<p class="text-xs text-on-surface-variant uppercase tracking-wider">Qty: 1 • Seasonal Berries</p>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-dashed border-outline-variant space-y-3">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-sm font-medium">Subtotal</span>
+<span class="text-sm font-bold">$36.50</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-sm font-medium">Delivery Surcharge</span>
+<span class="text-sm font-bold">$4.50</span>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="text-lg font-black tracking-tighter uppercase">Total Amount</span>
+<span class="text-2xl font-black text-primary">$41.00</span>
+</div>
+</div>
+<button class="w-full py-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white font-bold text-lg tracking-tight shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                        Confirm &amp; Place Order
+                    </button>
+<p class="text-[10px] text-center text-on-surface-variant uppercase tracking-[0.2em] font-bold">
+                        Encrypted &amp; Secured by Atelier Pay
+                    </p>
+</div>
+<div class="mt-6 p-6 rounded-xl bg-tertiary-container/10 flex items-start gap-4">
+<span class="material-symbols-outlined text-tertiary-dim" data-icon="auto_awesome">auto_awesome</span>
+<div>
+<p class="text-sm font-bold text-on-tertiary-container">Atelier Privilege</p>
+<p class="text-xs text-on-tertiary-container/80">You're earning 410 points with this order toward your next Chef's Table experience.</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-6 pb-10 pt-4 bg-white/90 backdrop-blur-md dark:bg-zinc-900/90 rounded-t-[2rem] shadow-[0px_-10px_40px_rgba(44,47,48,0.06)]">
+<button class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#FF6B35] text-white rounded-full px-5 py-2 transition-transform active:scale-90 duration-300">
+<span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Cart</span>
+</button>
+<button class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-transform active:scale-90 duration-300">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

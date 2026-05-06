@@ -21,6 +21,9 @@ Route::get('/public/tenant/{domain}', [\App\Http\Controllers\Api\SuperAdminContr
 Route::get('/public/menu/{domain}', [\App\Http\Controllers\Api\MenuController::class, 'publicIndex']);
 Route::post('/public/orders/{domain}', [\App\Http\Controllers\Api\OrderController::class, 'publicStore']);
 
+// Public WhatsApp Webhook (Required for WSAPI integration)
+Route::post('/whatsapp/webhook', [\App\Http\Controllers\Api\WhatsAppController::class, 'webhook']);
+
 // SuperAdmin Protected Routes
 Route::middleware(['auth:sanctum'])->group(function () {
     
@@ -70,6 +73,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // AI Assistant
         Route::post('/ai/chat', [\App\Http\Controllers\Api\AiAssistantController::class, 'chat']);
         Route::post('/ai/report', [\App\Http\Controllers\Api\AiAssistantController::class, 'generateReport']);
+
+        // WhatsApp Ordering
+        Route::post('/whatsapp/config', [\App\Http\Controllers\Api\WhatsAppController::class, 'updateConfig']);
     });
 
     // Generic Profile

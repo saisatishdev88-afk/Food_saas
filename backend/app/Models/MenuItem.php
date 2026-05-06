@@ -20,7 +20,8 @@ class MenuItem extends Model
         'image_url',
         'is_available',
         'is_veg',
-        'prep_time'
+        'prep_time',
+        'is_whatsapp_visible'
     ];
 
     public function category()

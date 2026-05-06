@@ -33,6 +33,9 @@ export default function AdminLoginPage() {
       
       // Store token for the axios client interceptor
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('loginTime', Date.now().toString());
 
       dispatch(setCredentials({
         user: data.user,
@@ -71,7 +74,7 @@ export default function AdminLoginPage() {
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#a63300]/5 rounded-full blur-3xl"></div>
           
           <header className="mb-8 text-center">
-            <h1 className="text-2xl font-extrabold text-[#2c2f30] tracking-tight mb-2 font-headline uppercase italic">Ateller SaaS Console</h1>
+            <h1 className="text-2xl font-extrabold text-[#2c2f30] tracking-tight mb-2 font-headline uppercase italic">Foodsoul SaaS Console</h1>
             <p className="text-[#595c5d] text-sm font-sans">SaaS Platform Root & Network Administration</p>
           </header>
 

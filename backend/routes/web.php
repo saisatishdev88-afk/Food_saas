@@ -18,9 +18,9 @@ use App\Http\Controllers\Auth\TechnicianRegisterController;
 use App\Http\Controllers\Technician\ProfileController;
 use App\Http\Controllers\Technician\BookingController as TechnicianBookingController;
 use App\Http\Controllers\Admin\AdminProfileController;
-use App\Http\Controllers\Admin\AdminServiceController;
-use App\Http\Controllers\Admin\AdminTechnicianController;
-use App\Http\Controllers\Admin\AdminBookingController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\TechnicianController as AdminTechnicianController;
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 
 /*
   |--------------------------------------------------------------------------

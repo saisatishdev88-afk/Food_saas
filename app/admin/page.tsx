@@ -100,23 +100,65 @@ export default function AdminDashboard() {
             </div>
         </Card>
 
-        {/* AI Sidebar */}
+        {/* Side Panels */}
         <div className="space-y-6">
-            <Card className="p-8 rounded-[2rem] bg-[#1a1c1d] text-white border-none shadow-xl relative overflow-hidden group h-fit">
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-primary mb-5">Predictive Logic</p>
-                <div className="space-y-5 relative z-10">
-                    <div className="flex gap-4 items-start">
-                        <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center text-primary shrink-0">
-                            <span className="material-symbols-outlined text-[16px]">trending_up</span>
+            {stats.ai_insights && (
+                <Card className="p-8 rounded-[2rem] bg-[#1a1c1d] text-white border border-primary/20 shadow-2xl relative overflow-hidden group h-fit">
+                    <div className="flex items-center gap-2 mb-6">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-primary">Strategic Analysis</p>
+                    </div>
+                    <div className="space-y-8 relative z-10">
+                        <div className="space-y-2">
+                            <p className="text-[8px] font-bold uppercase tracking-widest text-white/40">Best Performing Item</p>
+                            <p className="text-xl font-bold italic text-white font-headline uppercase">{stats.ai_insights.best_item}</p>
                         </div>
-                        <div>
-                            <p className="text-[11px] font-bold uppercase tracking-tight mb-1">{stats.ai_forecast?.trend || 'Surge Prediction'}</p>
-                            <p className="text-[10px] font-medium text-white/40 leading-relaxed italic">Peak expected at {stats.ai_forecast?.peak_hour}. {stats.ai_forecast?.staff_suggestion}.</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40">Peak Traffic</p>
+                                <p className="text-sm font-bold text-emerald-400">{stats.ai_insights.peak_hours}</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[8px] font-bold uppercase tracking-widest text-white/40">Slow Period</p>
+                                <p className="text-sm font-bold text-amber-400">{stats.ai_insights.slow_hours}</p>
+                            </div>
+                        </div>
+                        <div className="pt-6 border-t border-white/5">
+                            <p className="text-[8px] font-bold uppercase tracking-widest text-primary mb-2">Suggested Action</p>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 flex items-center gap-3">
+                                <span className="material-symbols-outlined text-primary text-sm">lightbulb</span>
+                                <p className="text-[11px] font-bold text-white/80">{stats.ai_insights.suggested_action}</p>
+                            </div>
                         </div>
                     </div>
+                    <div className="absolute right-[-15%] bottom-[-15%] opacity-[0.03] text-[12rem] text-primary select-none group-hover:scale-110 transition-transform duration-700">
+                        <span className="material-symbols-outlined italic">psychology</span>
+                    </div>
+                </Card>
+            )}
+
+            <Card className="p-8 rounded-[2rem] bg-white border border-outline-variant/10 shadow-sm relative overflow-hidden group h-fit">
+                <div className="flex justify-between items-start mb-6">
+                    <div>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 mb-1">Active Subscription</p>
+                        <h4 className="text-xl font-black text-on-surface uppercase italic font-headline">{stats.plan_type || 'Premium'} Package</h4>
+                    </div>
+                    <span className="bg-primary/10 text-primary text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Active</span>
                 </div>
-                <div className="absolute right-[-10%] bottom-[-10%] opacity-[0.05] text-[10rem] text-primary select-none">
-                    <span className="material-symbols-outlined italic">bolt</span>
+                
+                <div className="space-y-4">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-on-surface-variant/30">Purchased Modules</p>
+                    <div className="flex flex-wrap gap-2">
+                        {stats.modules && Object.entries(stats.modules)
+                            .filter(([_, enabled]) => enabled)
+                            .map(([key, _]) => (
+                                <div key={key} className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl hover:bg-primary/5 hover:border-primary/20 transition-colors">
+                                    <span className="material-symbols-outlined text-[14px] text-primary">check_circle</span>
+                                    <span className="text-[9px] font-bold text-on-surface uppercase tracking-tight">{key.replace('_', ' ')}</span>
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
             </Card>
 
@@ -125,7 +167,7 @@ export default function AdminDashboard() {
                     <span className="material-symbols-outlined text-[18px]">settings</span>
                 </div>
                 <div>
-                    <h4 className="text-[10px] font-bold tracking-widest uppercase">Node Settings</h4>
+                    <h4 className="text-[10px] font-bold tracking-widest uppercase text-on-surface">Node Settings</h4>
                     <p className="text-[8px] font-bold text-on-surface-variant opacity-30 uppercase tracking-widest mt-0.5">Terminal Identity</p>
                 </div>
             </Card>

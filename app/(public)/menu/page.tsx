@@ -53,7 +53,7 @@ export default function CustomerMenuPage() {
           {tenantInfo?.logo ? (
               <img src={tenantInfo.logo} className="h-8 object-contain" alt={tenantInfo.name} />
           ) : (
-              <span className="text-xl font-black text-primary tracking-tighter uppercase">{tenantInfo?.name || 'Foodsoul'}</span>
+              <span className="text-xl font-black text-primary tracking-tighter uppercase">{tenantInfo?.name || 'Menu'}</span>
           )}
           {table && (
               <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-[10px] font-black uppercase">Table {table}</span>

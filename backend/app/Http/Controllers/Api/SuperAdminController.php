@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tenant;
+use App\Models\TenantSettlement;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class SuperAdminController extends Controller
 {
@@ -50,6 +52,49 @@ class SuperAdminController extends Controller
             }
         });
 
+        // 1. Fetch real settlements
+        $settlements = TenantSettlement::with('tenant:id,name')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($s) {
+                return [
+                    'id' => $s->id,
+                    'restaurant' => $s->tenant->name ?? 'Unknown',
+                    'amount' => (float)$s->amount,
+                    'date' => $s->created_at->format('Y-m-d'),
+                    'status' => $s->status,
+                ];
+            });
+
+        // 2. Generate Real Alerts
+        $alerts = [];
+        $expiringTenants = Tenant::whereNotNull('subscription_expires_at')
+            ->where('subscription_expires_at', '<', now()->addDays(7))
+            ->get();
+        
+        foreach ($expiringTenants as $t) {
+            $alerts[] = ['type' => 'expiry', 'message' => "{$t->name} Node expires soon"];
+        }
+
+        $failedSettlements = TenantSettlement::with('tenant:id,name')
+            ->where('status', 'failed')
+            ->latest()
+            ->take(2)
+            ->get();
+        
+        foreach ($failedSettlements as $fs) {
+            $alerts[] = ['type' => 'payment', 'message' => "Payment failed for {$fs->tenant->name}"];
+        }
+
+        if (empty($alerts)) {
+            $alerts[] = ['type' => 'activity', 'message' => 'Network status nominal. No active alerts.'];
+        }
+
+        // 3. Demand Forecast based on orders
+        $totalOrdersToday = \App\Models\Order::whereDate('created_at', Carbon::today())->count();
+        $trend = $totalOrdersToday > 50 ? 'High Surge' : 'Network Scale Optimized';
+
         return response()->json([
             'total_restaurants' => Tenant::count(),
             'active_restaurants' => Tenant::where('status', 'active')->count(),
@@ -59,19 +104,11 @@ class SuperAdminController extends Controller
             'ai_forecast' => [
                 'demand' => [
                     'peak_hour' => '8:30 PM',
-                    'trend' => 'Network Scale Optimized',
+                    'trend' => $trend,
                     'staff_suggestion' => '+15 resources across nodes'
                 ],
-                'alerts' => [
-                    ['type' => 'expiry', 'message' => 'Chennai Express Node expires in 2 days'],
-                    ['type' => 'payment', 'message' => 'Payment failed for Gateway Spice'],
-                    ['type' => 'activity', 'message' => 'Low activity detected in Mumbai Hub'],
-                ],
-                'payment_history' => [
-                    ['id' => 1, 'restaurant' => 'Urban Bites', 'amount' => 7500, 'date' => '2024-04-24', 'status' => 'success'],
-                    ['id' => 2, 'restaurant' => 'Spice Route', 'amount' => 3500, 'date' => '2024-04-23', 'status' => 'success'],
-                    ['id' => 3, 'restaurant' => 'Dosa Hub', 'amount' => 1500, 'date' => '2024-04-20', 'status' => 'failed'],
-                ]
+                'alerts' => $alerts,
+                'payment_history' => $settlements
             ]
         ]);
     }
@@ -114,12 +151,27 @@ class SuperAdminController extends Controller
             'domain' => $validated['domain'],
             'email' => $validated['email'],
             'plan_type' => $validated['plan_type'],
+            'subscription_expires_at' => now()->addDays(30),
             'modules' => $validated['modules'] ?? [
                 'qr_menu' => false,
                 'inventory' => false,
                 'shift_management' => false,
                 'ai_assistant' => false,
+                'whatsapp_ordering' => false,
+                'whatsapp_limit' => 500,
             ],
+        ]);
+
+        // Create initial settlement
+        TenantSettlement::create([
+            'tenant_id' => $tenant->id,
+            'amount' => match($tenant->plan_type) {
+                'basic' => 1500,
+                'premium' => 3500,
+                'pro' => 7500,
+                default => 3500,
+            },
+            'status' => 'success',
         ]);
 
         $owner = User::create([

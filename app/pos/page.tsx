@@ -138,7 +138,7 @@ export default function PosPage() {
             <div className="flex items-center gap-4">
                 <span className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold italic">BF</span>
                 <div>
-                   <h1 className="text-xl font-bold tracking-tight uppercase leading-none">Foodsoul POS</h1>
+                   <h1 className="text-xl font-bold tracking-tight uppercase leading-none">{user?.tenant?.name || 'Partner'} POS</h1>
                     <p className="text-[10px] uppercase font-bold text-on-surface-variant opacity-40 mt-1">Terminal Active • {user?.name}</p>
                 </div>
             </div>

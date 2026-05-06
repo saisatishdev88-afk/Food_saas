@@ -21,10 +21,25 @@ class ShiftController extends Controller
 
     public function status()
     {
-        // Get current user's active shift
-        $activeShift = Shift::where('user_id', auth()->id())
+        $user = auth()->user();
+        
+        // Find if there is an active shift
+        $activeShift = Shift::where('user_id', $user->id)
                             ->whereNull('clock_out')
                             ->first();
+
+        if ($activeShift) {
+            // Check if the shift was started on a different day
+            // We use the tenant's current date or just system date
+            if ($activeShift->clock_in->format('Y-m-d') !== now()->format('Y-m-d')) {
+                // Auto-close the stale shift from a previous day
+                $activeShift->update([
+                    'clock_out' => $activeShift->clock_in->copy()->endOfDay(),
+                    'is_incomplete' => true
+                ]);
+                $activeShift = null;
+            }
+        }
 
         return response()->json([
             'is_clocked_in' => $activeShift !== null,
@@ -37,6 +52,15 @@ class ShiftController extends Controller
         try {
             $user = auth()->user();
             
+            // First, cleanup any stale shifts from previous days
+            Shift::where('user_id', $user->id)
+                 ->whereNull('clock_out')
+                 ->whereDate('clock_in', '<', now()->format('Y-m-d'))
+                 ->update([
+                     'clock_out' => \DB::raw('clock_in'), // Close at the same time to signal invalidity
+                     'is_incomplete' => true
+                 ]);
+
             $activeShift = Shift::where('user_id', $user->id)
                                 ->whereNull('clock_out')
                                 ->first();

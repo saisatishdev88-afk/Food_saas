@@ -16,10 +16,14 @@ class Tenant extends Model
         'status',
         'plan_type',
         'modules',
+        'whatsapp_config',
+        'subscription_expires_at',
     ];
 
     protected $casts = [
         'modules' => 'array',
+        'whatsapp_config' => 'array',
+        'subscription_expires_at' => 'datetime',
     ];
 
     public function users()

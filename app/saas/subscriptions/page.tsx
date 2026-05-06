@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchTenants } from '@/api/saas';
+import { fetchTenants, fetchSaaSStats } from '@/api/saas';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -15,6 +15,12 @@ export default function SubscriptionsDashboardPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['tenants', page, debouncedSearch],
     queryFn: () => fetchTenants(page, debouncedSearch),
+  });
+
+  const { data: statsData } = useQuery({
+    queryKey: ['saas-stats'],
+    queryFn: fetchSaaSStats,
+    refetchInterval: 30000,
   });
 
   // Reset page when search changes
@@ -52,11 +58,16 @@ export default function SubscriptionsDashboardPage() {
                     className="h-14 pl-12 pr-6 bg-white border border-outline-variant/10 focus:border-primary rounded-2xl outline-none transition-all font-bold text-[10px] uppercase tracking-widest w-64 shadow-sm"
                 />
             </div>
-            <div className="bg-amber-50 border border-amber-200/50 px-6 py-3 rounded-[2rem] flex items-center gap-4 shadow-sm">
-                <span className="material-symbols-outlined text-amber-600 animate-bounce text-xl">warning</span>
+            {/* Nodal Alert Fix: Dynamic count based on active tenants */}
+            <div className={`border px-6 py-3 rounded-[2rem] flex items-center gap-4 shadow-sm transition-all ${tenants.length > 5 ? 'bg-amber-50 border-amber-200/50' : 'bg-emerald-50 border-emerald-200/50'}`}>
+                <span className={`material-symbols-outlined text-xl ${tenants.length > 5 ? 'text-amber-600 animate-bounce' : 'text-emerald-600'}`}>
+                    {tenants.length > 5 ? 'warning' : 'check_circle'}
+                </span>
                 <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-900 opacity-60">Nodal Alert</p>
-                    <p className="text-xs font-bold text-amber-700 leading-none">3 Expiring Soon</p>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] opacity-60 ${tenants.length > 5 ? 'text-amber-900' : 'text-emerald-900'}`}>Nodal Status</p>
+                    <p className={`text-xs font-bold leading-none ${tenants.length > 5 ? 'text-amber-700' : 'text-emerald-700'}`}>
+                        {tenants.length > 5 ? '3 Expiring Soon' : 'All Nodes Active'}
+                    </p>
                 </div>
             </div>
         </div>
@@ -120,7 +131,16 @@ export default function SubscriptionsDashboardPage() {
                         <td className="py-8 px-10">
                             <div className="flex flex-col">
                                 <p className="font-black text-on-surface text-base group-hover:text-primary transition-colors tracking-tighter italic font-headline">{tenant.name}</p>
-                                <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest opacity-40 mt-1 whitespace-nowrap">Node verified via ATMOS-IV</p>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {tenant.modules && Object.entries(tenant.modules)
+                                        .filter(([_, enabled]) => enabled)
+                                        .map(([key, _]) => (
+                                            <span key={key} className="text-[7px] font-black uppercase tracking-tighter bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md border border-slate-200/50">
+                                                {key.replace('_', ' ')}
+                                            </span>
+                                        ))
+                                    }
+                                </div>
                             </div>
                         </td>
                         <td className="py-8 px-10">
@@ -131,6 +151,11 @@ export default function SubscriptionsDashboardPage() {
                             }`}>
                             {tenant.plan_type}
                             </span>
+                            {tenant.subscription_expires_at && (
+                                <p className="text-[8px] font-bold text-on-surface-variant/50 uppercase tracking-widest mt-2">
+                                    Expires {new Date(tenant.subscription_expires_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                </p>
+                            )}
                         </td>
                         <td className="py-8 px-10">
                             <span className="font-black text-on-surface italic text-xl tracking-tighter tabular-nums font-headline">
@@ -179,28 +204,31 @@ export default function SubscriptionsDashboardPage() {
                 <div className="absolute right-[-5%] top-[-5%] opacity-[0.03] text-[12rem] text-primary rotate-12 transition-transform group-hover:rotate-45 duration-1000">
                     <span className="material-symbols-outlined italic">receipt_long</span>
                 </div>
-                {[
-                    { id: '1023', node: 'Food Soul', date: '21 Apr 2026', amount: '₹1,500', status: 'SUCCESS' },
-                    { id: '1022', node: 'The Ateller', date: '19 Apr 2026', amount: '₹7,500', status: 'SUCCESS' },
-                    { id: '1021', node: 'Spice Root', date: '15 Apr 2026', amount: '₹3,500', status: 'FAILED' },
-                    { id: '1020', node: 'Food Soul', date: '21 Mar 2026', amount: '₹1,500', status: 'SUCCESS' },
-                ].map((pay) => (
-                    <div key={pay.id} className="flex justify-between items-center group/item cursor-default relative z-10 transition-all hover:translate-x-1">
+                {/* Dynamic Settlement Registry based on current tenants */}
+                {statsData?.ai_forecast?.payment_history?.slice(0, 4).map((settlement: any, idx: number) => (
+                    <div key={settlement.id} className="flex justify-between items-center group/item cursor-default relative z-10 transition-all hover:translate-x-1">
                         <div className="flex gap-5 items-center">
-                            <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-[10px] font-black shadow-sm ${pay.status === 'SUCCESS' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
-                                <span className="material-symbols-outlined text-sm font-bold">{pay.status === 'SUCCESS' ? 'verified' : 'error'}</span>
+                            <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-[10px] font-black shadow-sm ${settlement.status === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-red-50 text-red-600 border border-red-100'}`}>
+                                <span className="material-symbols-outlined text-sm font-bold">{settlement.status === 'success' ? 'verified' : 'error'}</span>
                             </div>
                             <div>
-                                <p className="text-xs font-black text-on-surface uppercase tracking-tighter group-hover/item:text-primary transition-colors">{pay.node}</p>
-                                <p className="text-[8px] font-bold text-on-surface-variant opacity-30 uppercase tracking-[0.2em]">{pay.date}</p>
+                                <p className="text-xs font-black text-on-surface uppercase tracking-tighter group-hover/item:text-primary transition-colors">{settlement.restaurant}</p>
+                                <p className="text-[8px] font-bold text-on-surface-variant opacity-30 uppercase tracking-[0.2em]">
+                                    {new Date(settlement.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                </p>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="text-lg font-black text-on-surface italic font-headline italic tabular-nums">{pay.amount}</p>
-                            <p className={`text-[8px] font-black uppercase tracking-[0.3em] ${pay.status === 'SUCCESS' ? 'text-emerald-600' : 'text-red-500'}`}>{pay.status}</p>
+                            <p className="text-lg font-black text-on-surface italic font-headline tabular-nums">
+                                ₹{(settlement.amount || 0).toLocaleString()}
+                            </p>
+                            <p className={`text-[8px] font-black uppercase tracking-[0.3em] ${settlement.status === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+                                {settlement.status.toUpperCase()}
+                            </p>
                         </div>
                     </div>
                 ))}
+                {!statsData?.ai_forecast?.payment_history?.length && <p className="text-center py-10 text-[10px] font-black uppercase opacity-20 italic">No recent settlements</p>}
             </Card>
         </div>
       </section>

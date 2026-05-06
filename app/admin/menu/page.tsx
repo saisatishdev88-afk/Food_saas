@@ -25,6 +25,7 @@ export default function MenuPage() {
     const [itemIsVeg, setItemIsVeg] = useState(true);
     const [itemImageUrl, setItemImageUrl] = useState('');
     const [itemCategoryId, setItemCategoryId] = useState<number | null>(null);
+    const [itemIsWhatsappVisible, setItemIsWhatsappVisible] = useState(false);
     const [itemIngredients, setItemIngredients] = useState<{inventory_item_id: number, quantity: number}[]>([]);
 
     const { data: dashboardData } = useQuery({
@@ -36,6 +37,7 @@ export default function MenuPage() {
     });
     
     const isInventoryEnabled = dashboardData?.modules?.inventory === true;
+    const isWhatsAppEnabled = dashboardData?.modules?.whatsapp_ordering === true;
 
     const { data: inventoryItems } = useQuery({
         queryKey: ['admin-inventory-items'],
@@ -101,6 +103,7 @@ export default function MenuPage() {
         setItemIsVeg(true);
         setItemImageUrl('');
         setItemCategoryId(activeCategory || (categories?.[0]?.id ?? null));
+        setItemIsWhatsappVisible(false);
         setItemIngredients([]);
         setIsItemModalOpen(true);
     };
@@ -113,6 +116,7 @@ export default function MenuPage() {
         setItemIsVeg(item.is_veg);
         setItemImageUrl(item.image_url || '');
         setItemCategoryId(item.category_id);
+        setItemIsWhatsappVisible(item.is_whatsapp_visible || false);
         setItemIngredients(item.ingredients?.map((i: any) => ({
             inventory_item_id: i.id,
             quantity: Number(i.pivot.quantity)
@@ -251,7 +255,7 @@ export default function MenuPage() {
             {/* Modals - All updated with smaller padding and fonts */}
             {isItemModalOpen && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl p-10 w-full max-w-xl shadow-2xl scale-in-center border border-outline-variant/5">
+                    <div className="bg-white rounded-3xl p-10 w-full max-w-xl shadow-2xl scale-in-center border border-outline-variant/5 max-h-[90vh] overflow-y-auto custom-scrollbar">
                         <h2 className="text-xl font-bold uppercase tracking-tight mb-8">
                             {itemToEdit ? 'Modify Dish' : 'Initialize Dish'}
                         </h2>
@@ -319,6 +323,27 @@ export default function MenuPage() {
                                     </div>
                                 </div>
                             </div>
+
+                            {isWhatsAppEnabled && (
+                                <div className="p-4 bg-green-50/50 rounded-2xl border border-green-100 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-green-500 rounded-xl flex items-center justify-center text-white shadow-sm">
+                                            <span className="material-symbols-outlined text-[16px]">chat</span>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-tight text-green-900">WhatsApp Visibility</p>
+                                            <p className="text-[8px] font-bold text-green-700/60 uppercase tracking-widest">Show this item in WhatsApp Menu</p>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setItemIsWhatsappVisible(!itemIsWhatsappVisible)}
+                                        className={`w-12 h-6 rounded-full relative transition-all duration-300 ${itemIsWhatsappVisible ? 'bg-green-500' : 'bg-slate-300'}`}
+                                    >
+                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${itemIsWhatsappVisible ? 'left-7' : 'left-1'}`}></div>
+                                    </button>
+                                </div>
+                            )}
 
                             <div className="space-y-2">
                                 <label className="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant ml-1 opacity-50">Description</label>
@@ -401,6 +426,7 @@ export default function MenuPage() {
                                     category_id: itemCategoryId,
                                     is_veg: itemIsVeg,
                                     image_url: itemImageUrl || null,
+                                    is_whatsapp_visible: itemIsWhatsappVisible,
                                     ...(isInventoryEnabled ? { ingredients: itemIngredients.filter(i => i.inventory_item_id !== 0) } : {})
                                 } as any)}
                             >Save Dish</Button>

@@ -34,7 +34,7 @@ export default function CartPage() {
   return (
     <div className="bg-[#f5f6f7] min-h-screen pb-32">
       <header className="bg-white dark:bg-zinc-950 flex justify-between items-center w-full px-8 py-5 sticky top-0 z-40 shadow-sm">
-        <Link href={`/menu${queryStr}`} className="text-2xl font-black text-[#a63300] italic font-headline">Foodsoul</Link>
+        <Link href={`/menu${queryStr}`} className="text-2xl font-black text-[#a63300] italic font-headline">{tenantInfo?.name || 'Restaurant'}</Link>
         <div className="flex items-center space-x-6 text-[#595c5d]">
           <Link href={`/menu${queryStr}`} className="hover:text-[#a63300]">Menu</Link>
           <div className="relative">

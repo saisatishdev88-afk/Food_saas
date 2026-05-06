@@ -90,6 +90,7 @@ class MenuController extends Controller
             'image_url' => 'nullable|string',
             'is_veg' => 'required|boolean',
             'prep_time' => 'nullable|integer',
+            'is_whatsapp_visible' => 'sometimes|boolean',
             'ingredients' => 'sometimes|array',
             'ingredients.*.inventory_item_id' => 'required|exists:inventory_items,id',
             'ingredients.*.quantity' => 'required|numeric|min:0'
@@ -120,6 +121,7 @@ class MenuController extends Controller
             'image_url' => 'nullable|string',
             'is_available' => 'sometimes|boolean',
             'is_veg' => 'sometimes|boolean',
+            'is_whatsapp_visible' => 'sometimes|boolean',
             'ingredients' => 'sometimes|array',
             'ingredients.*.inventory_item_id' => 'required|exists:inventory_items,id',
             'ingredients.*.quantity' => 'required|numeric|min:0'

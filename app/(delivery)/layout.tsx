@@ -7,7 +7,7 @@ export default function DeliveryLayout({ children }: { children: React.ReactNode
       {/* SideNavBar */}
       <aside className="hidden md:flex flex-col h-screen w-72 bg-[#eff1f2] dark:bg-slate-900 py-8 px-4 gap-2 shrink-0">
         <div className="px-6 mb-10">
-          <h1 className="font-headline font-extrabold text-primary text-2xl tracking-tighter">Foodsoul</h1>
+          <h1 className="font-headline font-extrabold text-primary text-2xl tracking-tighter">{user?.tenant?.name || 'Delivery'}</h1>
           <p className="font-sans text-xs uppercase tracking-wider text-on-surface-variant mt-1">Delivery Depot</p>
         </div>
         <nav className="flex flex-col gap-2 grow">

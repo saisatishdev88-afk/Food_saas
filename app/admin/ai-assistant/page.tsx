@@ -14,7 +14,7 @@ type Message = {
 
 export default function AiAssistantPage() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Hello! I am your Foodsoul AI Assistant. I can analyze sales, identify slow-moving items, or help you generate operational reports. How can I assist you today?' }
+    { role: 'assistant', content: 'Hello! I am your AI Assistant. I can analyze sales, identify slow-moving items, or help you generate operational reports. How can I assist you today?' }
   ]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -28,8 +28,9 @@ export default function AiAssistantPage() {
     onSuccess: (data) => {
       setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
     },
-    onError: () => {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error communicating with the network.' }]);
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || 'Sorry, I encountered an error communicating with the network.';
+      setMessages(prev => [...prev, { role: 'assistant', content: msg }]);
     }
   });
 
@@ -99,7 +100,7 @@ export default function AiAssistantPage() {
                 </div>
               </div>
               <span className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant opacity-30 mt-2 mx-12">
-                {msg.role === 'user' ? 'You' : 'Foodsoul AI'}
+                {msg.role === 'user' ? 'You' : 'AI Assistant'}
               </span>
             </div>
           ))}

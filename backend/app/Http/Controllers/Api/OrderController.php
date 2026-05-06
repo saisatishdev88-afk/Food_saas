@@ -164,6 +164,7 @@ class OrderController extends Controller
 
     public function dashboard()
     {
+        \Log::info('Dashboard Request Received');
         $tenantId = auth()->user()->tenant_id;
         $startOfDay = \Carbon\Carbon::today()->startOfDay();
         $endOfDay = \Carbon\Carbon::today()->endOfDay();
@@ -180,6 +181,13 @@ class OrderController extends Controller
         $totalItems = \App\Models\MenuItem::count();
 
         $liveOrders = Order::whereIn('status', ['pending', 'accepted', 'preparing', 'ready'])->count();
+
+        $ordersByType = Order::whereBetween('created_at', [$startOfDay, $endOfDay])
+            ->select('type', DB::raw('count(*) as count'))
+            ->groupBy('type')
+            ->get()
+            ->pluck('count', 'type')
+            ->toArray();
 
         // Check if inventory module is enabled
         $tenantModules = auth()->user()->tenant->modules ?? [];
@@ -198,6 +206,13 @@ class OrderController extends Controller
             'total_staff' => $totalStaff,
             'total_items' => $totalItems,
             'live_orders' => $liveOrders,
+            'plan_type' => auth()->user()->tenant->plan_type,
+            'subscription_expires_at' => auth()->user()->tenant->subscription_expires_at,
+            'orders_by_type' => [
+                'pos' => $ordersByType['offline'] ?? 0,
+                'qr' => $ordersByType['online'] ?? 0,
+                'whatsapp' => $ordersByType['whatsapp'] ?? 0,
+            ],
             'modules' => auth()->user()->tenant->modules ?? [
                 'qr_menu' => false,
                 'inventory' => false,
@@ -206,6 +221,17 @@ class OrderController extends Controller
             ],
             'recent_orders' => Order::latest()->take(5)->get(),
             'low_stock_items' => $lowStockItems,
+            'ai_insights' => (!empty($tenantModules['ai_assistant'])) ? [
+                'best_item' => OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                                ->where('orders.tenant_id', $tenantId)
+                                ->select('item_name', DB::raw('SUM(quantity) as total_qty'))
+                                ->groupBy('item_name')
+                                ->orderByDesc('total_qty')
+                                ->first()?->item_name ?? 'N/A',
+                'slow_hours' => '3–5 PM',
+                'peak_hours' => '8–10 PM',
+                'suggested_action' => 'Add Late Lunch Combo'
+            ] : null,
             'ai_forecast' => [
                 'peak_hour' => '8:30 PM',
                 'trend' => 'High Volume Surge',

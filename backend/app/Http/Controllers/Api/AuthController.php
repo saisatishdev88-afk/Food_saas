@@ -29,6 +29,16 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Check if tenant subscription is expired
+        if ($user->role !== 'superadmin' && $user->tenant) {
+            $expiresAt = $user->tenant->subscription_expires_at;
+            if ($expiresAt && \Carbon\Carbon::parse($expiresAt)->isPast()) {
+                return response()->json([
+                    'message' => 'Your subscription has expired. Please contact support to renew your plan.'
+                ], 403);
+            }
+        }
+
         // Generate token (generic ability for now)
         $token = $user->createToken('auth-token', ['all-access'])->plainTextToken;
 

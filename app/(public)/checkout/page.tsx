@@ -81,7 +81,7 @@ export default function CheckoutPage() {
   return (
     <div className="bg-[#f5f6f7] min-h-screen antialiased">
       <header className="bg-white dark:bg-zinc-950 flex justify-between items-center w-full px-8 py-5 sticky top-0 z-[60] shadow-sm">
-        <Link href="/menu" className="text-2xl font-black text-[#a63300] italic font-headline">Foodsoul</Link>
+        <Link href="/menu" className="text-2xl font-black text-[#a63300] italic font-headline">{tenantInfo?.name || 'Restaurant'}</Link>
         <div className="flex items-center gap-6 text-[#595c5d]">
           <Link href="/menu" className="hover:text-[#a63300]">Menu</Link>
           <Link href="/cart" className="relative hover:text-[#a63300]">
@@ -131,7 +131,7 @@ export default function CheckoutPage() {
                     <label className="text-xs font-bold uppercase tracking-widest text-[#595c5d] px-1">Delivery Address</label>
                     <input 
                       className="w-full bg-[#dadddf] border-none rounded-lg p-4 focus:ring-0 focus:border-b-2 focus:border-[#a63300] transition-all outline-none" 
-                      placeholder="123 Atelier Way, Gastronomy District" 
+                      placeholder="123 Foodsoul Way, Gastronomy District" 
                       type="text"
                       value={formData.address}
                       onChange={(e) => setFormData({...formData, address: e.target.value})}
@@ -222,7 +222,7 @@ export default function CheckoutPage() {
             <div className="mt-6 p-6 rounded-xl bg-[#005e9f]/5 flex items-start gap-4">
               <span className="material-symbols-outlined text-[#00528b]">auto_awesome</span>
               <div>
-                <p className="text-sm font-bold text-[#003258]">Foodsoul Rewards</p>
+                <p className="text-sm font-bold text-[#003258]">{tenantInfo?.name || 'Restaurant'} Rewards</p>
                 <p className="text-xs text-[#003b67]/80">You're earning {Math.floor(total * 10)} points with this order toward your next reservation.</p>
               </div>
             </div>

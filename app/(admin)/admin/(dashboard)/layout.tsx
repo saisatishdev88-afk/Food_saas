@@ -53,10 +53,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="material-symbols-outlined">analytics</span>
               <span className="font-sans text-sm uppercase tracking-wider">Analytics</span>
             </button>
-            <button className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98 text-left">
+            <Link href="/admin/staff" className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98">
               <span className="material-symbols-outlined">group</span>
-              <span className="font-sans text-sm uppercase tracking-wider">Staff Manager</span>
-            </button>
+              <span className="font-sans text-sm uppercase tracking-wider font-semibold">Staff Manager</span>
+            </Link>
+            <Link href="/admin/whatsapp" className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98">
+              <span className="material-symbols-outlined text-green-500">chat</span>
+              <span className="font-sans text-sm uppercase tracking-wider font-semibold">WhatsApp</span>
+            </Link>
           </nav>
           
           <div className="mt-auto flex flex-col gap-1 border-t border-outline-variant/10 pt-4">
@@ -75,7 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* TopNavBar */}
           <header className="flex justify-between items-center w-full px-8 h-20 bg-surface/90 backdrop-blur-md shadow-[0px_20px_40px_rgba(44,47,48,0.06)] sticky top-0 z-40">
             <div className="flex items-center gap-8">
-              <span className="text-2xl font-black text-primary tracking-tighter hidden lg:block font-headline">Culinary Atelier</span>
+              <span className="text-2xl font-black text-primary tracking-tighter hidden lg:block font-headline">Foodsoul Network</span>
               <nav className="flex items-center gap-6">
                 <Link href="/admin/dashboard" className="text-primary border-b-2 border-primary pb-1 font-headline font-bold tracking-tight active:scale-95 transition-transform">Dashboard</Link>
                 <button className="text-on-surface-variant font-medium font-headline tracking-tight hover:text-primary transition-colors duration-200">Inventory</button>

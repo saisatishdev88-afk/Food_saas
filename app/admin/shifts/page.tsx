@@ -61,10 +61,16 @@ export default function ShiftsPage() {
                   </td>
                   <td className="py-8 px-10">
                     <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest shadow-sm ring-1 ring-inset ${
-                      isActive ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-slate-50 text-slate-500 ring-slate-200'
+                      isActive ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 
+                      shift.is_incomplete ? 'bg-amber-50 text-amber-700 ring-amber-200' :
+                      'bg-slate-50 text-slate-500 ring-slate-200'
                     }`}>
-                      <span className={`w-1 h-1 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></span>
-                      {isActive ? 'Active Shift' : 'Completed'}
+                      <span className={`w-1 h-1 rounded-full ${
+                        isActive ? 'bg-emerald-500 animate-pulse' : 
+                        shift.is_incomplete ? 'bg-amber-500' :
+                        'bg-slate-400'
+                      }`}></span>
+                      {isActive ? 'Active Shift' : shift.is_incomplete ? 'Missed Clock Out' : 'Completed'}
                     </span>
                   </td>
                   <td className="py-8 px-10">

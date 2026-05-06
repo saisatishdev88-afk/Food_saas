@@ -36,7 +36,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
               <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>shield_person</span>
             </div>
             <div>
-              <h1 className="font-headline font-black text-primary text-xl uppercase italic tracking-tighter">Ateller</h1>
+              <h1 className="font-headline font-black text-primary text-xl uppercase italic tracking-tighter">Foodsoul</h1>
               <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Saas Console</p>
             </div>
           </div>

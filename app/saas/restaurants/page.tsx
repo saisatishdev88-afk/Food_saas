@@ -29,6 +29,7 @@ export default function SaasRestaurantManagementPage() {
       inventory: false,
       shift_management: false,
       ai_assistant: false,
+      whatsapp_ordering: false,
     }
   });
   const [formError, setFormError] = useState('');
@@ -61,6 +62,7 @@ export default function SaasRestaurantManagementPage() {
           inventory: false,
           shift_management: false,
           ai_assistant: false,
+          whatsapp_ordering: false,
         }
       });
       setFormError('');
@@ -94,6 +96,7 @@ export default function SaasRestaurantManagementPage() {
                 inventory: false,
                 shift_management: false,
                 ai_assistant: false,
+                whatsapp_ordering: false,
             } : prev.modules
         }));
     } else {
@@ -116,7 +119,7 @@ export default function SaasRestaurantManagementPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-outline-variant/5 pb-8">
         <div>
           <h2 className="text-3xl font-black tracking-tight text-on-surface font-headline uppercase italic">Restaurant <span className="text-primary italic">Network</span></h2>
-          <p className="text-on-surface-variant font-medium text-sm opacity-50">Global node registry and commercial index for the Atelier ecosystem.</p>
+          <p className="text-on-surface-variant font-medium text-sm opacity-50">Global node registry and commercial index for the Foodsoul ecosystem.</p>
         </div>
         <div className="flex items-center gap-4">
             <div className="relative group">
@@ -346,6 +349,13 @@ export default function SaasRestaurantManagementPage() {
                           <div className="flex flex-col">
                               <span className="text-xs font-black uppercase tracking-widest text-on-surface">AI Chat Assistant</span>
                               <span className="text-[9px] font-bold text-on-surface-variant">Intelligent analytics & reporting</span>
+                          </div>
+                      </label>
+                      <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                          <input type="checkbox" name="whatsapp_ordering" checked={formData.modules.whatsapp_ordering} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                          <div className="flex flex-col">
+                              <span className="text-xs font-black uppercase tracking-widest text-on-surface">WhatsApp Ordering</span>
+                              <span className="text-[9px] font-bold text-on-surface-variant">Automated WhatsApp ordering bot</span>
                           </div>
                       </label>
                   </div>

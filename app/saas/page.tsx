@@ -29,11 +29,8 @@ export default function SaasDashboardPage() {
   }));
 
   const aiForecast = stats?.ai_forecast || {
-    demand: { peak_hour: '8:30 PM', trend: 'High Surge', staff_suggestion: '+3 staff recommended' },
-    alerts: [
-        { type: 'expiry', message: 'Chennai Express Node expires in 2 days' },
-        { type: 'payment', message: 'Payment failed for Gateway Spice' }
-    ]
+    demand: { peak_hour: '...', trend: '...', staff_suggestion: '...' },
+    alerts: []
   };
 
   return (

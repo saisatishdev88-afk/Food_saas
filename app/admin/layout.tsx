@@ -78,6 +78,7 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   if (modules.inventory) navItems.push({ name: 'Inventory', href: '/admin/inventory', icon: 'inventory_2' });
   if (modules.shift_management) navItems.push({ name: 'Shift Tracking', href: '/admin/shifts', icon: 'schedule' });
   if (modules.ai_assistant) navItems.push({ name: 'AI Assistant', href: '/admin/ai-assistant', icon: 'smart_toy' });
+  if (modules.whatsapp_ordering) navItems.push({ name: 'WhatsApp', href: '/admin/whatsapp', icon: 'chat' });
 
   return (
     <TenantGuard>
@@ -89,7 +90,7 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
               <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant</span>
             </div>
             <div>
-              <h2 className="font-headline font-extrabold text-[#2c2f30] text-xl leading-none italic">Foodsoul</h2>
+              <h2 className="font-headline font-extrabold text-[#2c2f30] text-xl leading-none italic">{user?.tenant?.name || 'Admin'}</h2>
               <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-on-surface-variant opacity-70">Outlet Console</p>
             </div>
           </div>

@@ -32,6 +32,9 @@ export default function LoginPage() {
       const { data } = await api.post('/login', { email, password });
       
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('loginTime', Date.now().toString());
 
       dispatch(setCredentials({
         user: data.user,

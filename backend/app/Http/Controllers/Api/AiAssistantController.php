@@ -12,6 +12,7 @@ class AiAssistantController extends Controller
 {
     public function chat(Request $request)
     {
+        \Log::info('AI Chat Request Received', ['message' => $request->message]);
         $validated = $request->validate([
             'message' => 'required|string|max:1000'
         ]);
@@ -70,11 +71,14 @@ class AiAssistantController extends Controller
                 ]);
             }
 
+            $errorBody = $response->json();
+            $errorMessage = $errorBody['error']['message'] ?? $response->body();
             return response()->json([
-                'message' => 'Error communicating with AI service: ' . $response->body()
+                'message' => 'AI Service Error: ' . $errorMessage
             ], 500);
 
         } catch (\Exception $e) {
+            \Log::error('AI Chat Exception: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return response()->json([
                 'message' => 'Failed to connect to OpenAI: ' . $e->getMessage()
             ], 500);

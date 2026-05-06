@@ -15,6 +15,7 @@ class Shift extends Model
         'user_id',
         'clock_in',
         'clock_out',
+        'is_incomplete',
     ];
 
     protected $casts = [

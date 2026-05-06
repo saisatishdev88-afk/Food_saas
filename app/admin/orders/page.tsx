@@ -82,6 +82,7 @@ export default function OrdersHistoryPage() {
                         <option value="">Channel: All</option>
                         <option value="offline">POS</option>
                         <option value="online">App</option>
+                        <option value="whatsapp">WhatsApp</option>
                     </select>
                 </div>
             </div>

@@ -14,14 +14,16 @@ export const TenantGuard: React.FC<TenantGuardProps> = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // If not authenticated, not an owner (admin/manager), or has no tenant_id, redirect
-    const isTenantUser = role === 'admin' || role === 'manager';
+    // Allow all tenant-scoped roles
+    const tenantRoles = ['admin', 'manager', 'cashier', 'waiter', 'kitchen', 'chef', 'delivery'];
+    const isTenantUser = tenantRoles.includes(role || '');
     if (!isAuthenticated || !isTenantUser || !user?.tenant_id) {
       router.replace('/login');
     }
   }, [isAuthenticated, role, user, router]);
 
-  const isTenantUser = role === 'admin' || role === 'manager';
+  const tenantRoles = ['admin', 'manager', 'cashier', 'waiter', 'kitchen', 'chef', 'delivery'];
+  const isTenantUser = tenantRoles.includes(role || '');
   if (!isAuthenticated || !isTenantUser || !user?.tenant_id) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f5f6f7]">

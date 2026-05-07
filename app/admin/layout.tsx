@@ -79,6 +79,8 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   if (modules.shift_management) navItems.push({ name: 'Shift Tracking', href: '/admin/shifts', icon: 'schedule' });
   if (modules.ai_assistant) navItems.push({ name: 'AI Assistant', href: '/admin/ai-assistant', icon: 'smart_toy' });
   if (modules.whatsapp_ordering) navItems.push({ name: 'WhatsApp', href: '/admin/whatsapp', icon: 'chat' });
+  navItems.push({ name: 'Subscription', href: '/admin/subscription', icon: 'payments' });
+  navItems.push({ name: 'Help & Support', href: '/admin/tickets', icon: 'help_outline' });
 
   return (
     <TenantGuard>

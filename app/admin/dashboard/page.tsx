@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { RootState } from '@/store';
 import { Card } from '@/components/ui/Card';
 import { useQuery } from '@tanstack/react-query';
@@ -9,6 +10,7 @@ import api from '@/api/client';
 
 export default function TenantDashboardPage() {
   const { user } = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
 
   const { data: dashboardData } = useQuery({
     queryKey: ['tenant-dashboard'],
@@ -131,13 +133,28 @@ export default function TenantDashboardPage() {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-on-surface-variant/40 mb-1">Active Subscription</p>
                       <h4 className="text-xl font-black text-on-surface uppercase italic font-headline leading-none">{dashboardData?.plan_type || 'Premium'}</h4>
                       {dashboardData?.subscription_expires_at && (
-                          <p className="text-[9px] font-bold text-on-surface-variant/60 uppercase tracking-widest mt-2">
-                              Expires: {new Date(dashboardData.subscription_expires_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          <p className={`text-[9px] font-bold uppercase tracking-widest mt-2 ${dashboardData?.is_subscription_expired ? 'text-red-500' : 'text-on-surface-variant/60'}`}>
+                              {dashboardData?.is_subscription_expired ? 'EXPIRED' : 'Expires'}: {new Date(dashboardData.subscription_expires_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                           </p>
                       )}
                   </div>
-                  <span className="bg-primary/10 text-primary text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Live</span>
+                  <span className={`text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${dashboardData?.is_subscription_expired ? 'bg-red-500 text-white animate-pulse' : 'bg-primary/10 text-primary'}`}>
+                    {dashboardData?.is_subscription_expired ? 'GRACE PERIOD' : 'Live'}
+                  </span>
               </div>
+
+              {dashboardData?.is_subscription_expired && (
+                  <div className="mb-6 p-4 bg-red-50 rounded-2xl border border-red-100">
+                      <p className="text-[10px] font-black text-red-700 uppercase tracking-tight mb-1">Action Required</p>
+                      <p className="text-[9px] text-red-600/70 font-bold uppercase tracking-widest leading-relaxed">Your subscription has expired. Node access will be suspended in {dashboardData?.subscription_grace_days || 3} days.</p>
+                      <button 
+                        onClick={() => router.push('/admin/subscription')}
+                        className="mt-3 w-full py-2 bg-red-600 text-white text-[8px] font-black uppercase tracking-widest rounded-lg shadow-lg hover:bg-red-700 transition-all"
+                      >
+                        Renew Subscription
+                      </button>
+                  </div>
+              )}
               
               <div className="space-y-4">
                   <p className="text-[8px] font-black uppercase tracking-[0.2em] text-on-surface-variant/30">Node Modules</p>

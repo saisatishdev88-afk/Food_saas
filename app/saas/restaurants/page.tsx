@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchTenants, createTenant } from '@/api/saas';
+import api from '@/api/client';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -16,6 +17,8 @@ export default function SaasRestaurantManagementPage() {
   const { success, error: toastError } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTenant, setSelectedTenant] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     domain: '',
@@ -24,6 +27,7 @@ export default function SaasRestaurantManagementPage() {
     owner_name: '',
     owner_email: '',
     owner_password: '',
+    subscription_grace_days: 3,
     modules: {
       qr_menu: false,
       inventory: false,
@@ -49,7 +53,30 @@ export default function SaasRestaurantManagementPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tenants'] });
       setIsModalOpen(false);
-      setFormData({ 
+      resetForm();
+      success('Node successfully onboarded to the network.');
+    },
+    onError: (err: any) => {
+      setFormError(err.response?.data?.message || 'Failed to onboard restaurant');
+      toastError(err.response?.data?.message || 'Failed to onboard node');
+    }
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => api.put(`/saas/tenants/${selectedTenant.id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+      setIsEditModalOpen(false);
+      setSelectedTenant(null);
+      success('Node updated successfully.');
+    },
+    onError: (err: any) => {
+      toastError(err.response?.data?.message || 'Failed to update node');
+    }
+  });
+
+  const resetForm = () => {
+    setFormData({ 
         name: '', 
         domain: '', 
         email: '', 
@@ -57,6 +84,7 @@ export default function SaasRestaurantManagementPage() {
         owner_name: '',
         owner_email: '',
         owner_password: '',
+        subscription_grace_days: 3,
         modules: {
           qr_menu: false,
           inventory: false,
@@ -66,13 +94,7 @@ export default function SaasRestaurantManagementPage() {
         }
       });
       setFormError('');
-      success('Node successfully onboarded to the network.');
-    },
-    onError: (err: any) => {
-      setFormError(err.response?.data?.message || 'Failed to onboard restaurant');
-      toastError(err.response?.data?.message || 'Failed to onboard node');
-    }
-  });
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -99,6 +121,8 @@ export default function SaasRestaurantManagementPage() {
                 whatsapp_ordering: false,
             } : prev.modules
         }));
+    } else if (name === 'subscription_grace_days') {
+        setFormData(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
     } else {
         setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -108,6 +132,28 @@ export default function SaasRestaurantManagementPage() {
     e.preventDefault();
     setFormError('');
     mutation.mutate(formData);
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateMutation.mutate({
+        name: formData.name,
+        plan_type: formData.plan_type,
+        modules: formData.modules,
+        subscription_grace_days: formData.subscription_grace_days,
+    });
+  };
+
+  const openEditModal = (tenant: any) => {
+    setSelectedTenant(tenant);
+    setFormData({
+        ...formData,
+        name: tenant.name,
+        plan_type: tenant.plan_type,
+        modules: tenant.modules || formData.modules,
+        subscription_grace_days: tenant.subscription_grace_days || 3,
+    });
+    setIsEditModalOpen(true);
   };
 
   const tenants = data?.data || [];
@@ -199,7 +245,7 @@ export default function SaasRestaurantManagementPage() {
                 </td>
                 <td className="py-8 px-10 text-right">
                   <div className="flex justify-end gap-3 opacity-100 transition-opacity">
-                      <button className="w-10 h-10 rounded-xl bg-white border border-outline-variant/10 text-on-surface-variant flex items-center justify-center hover:bg-[#1a1c1d] hover:text-white transition-all shadow-sm">
+                      <button onClick={() => openEditModal(tenant)} className="w-10 h-10 rounded-xl bg-white border border-outline-variant/10 text-on-surface-variant flex items-center justify-center hover:bg-[#1a1c1d] hover:text-white transition-all shadow-sm">
                           <span className="material-symbols-outlined text-lg">edit_document</span>
                       </button>
                       <button className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 text-red-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
@@ -285,6 +331,10 @@ export default function SaasRestaurantManagementPage() {
                         </select>
                     </div>
                 </div>
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 opacity-50">Grace Period (Days after Expiry)</label>
+                    <input type="number" name="subscription_grace_days" value={formData.subscription_grace_days} onChange={handleInputChange} placeholder="3" className="w-full h-14 px-6 bg-slate-50 border border-outline-variant/10 focus:border-primary rounded-2xl outline-none transition-all font-bold text-sm text-on-surface" />
+                </div>
               </div>
 
               {/* Administrative Lead */}
@@ -365,6 +415,76 @@ export default function SaasRestaurantManagementPage() {
               <div className="flex gap-6 pt-10">
                 <Button type="button" onClick={() => setIsModalOpen(false)} variant="secondary" className="flex-1 h-16 rounded-2xl ftext-[10px] font-black uppercase tracking-widest border-outline-variant/10 text-on-surface-variant" > Abort Request </Button>
                 <Button type="submit" disabled={mutation.isPending} className="flex-1 h-16 bg-[#1a1c1d] text-on-primary rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary transition-all border-none shadow-2xl" > {mutation.isPending ? 'Propagating...' : 'Onboard Command Node'} </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-y-auto max-h-[90vh] animate-in zoom-in-95 duration-300 border border-white/10">
+            <header className="bg-primary p-12 text-white relative overflow-hidden">
+              <h3 className="text-3xl font-black font-headline uppercase italic tracking-tighter">Edit <span className="text-white italic">Node</span></h3>
+              <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mt-2">Modify existing business configuration for {selectedTenant?.name}.</p>
+            </header>
+            
+            <form onSubmit={handleUpdate} className="p-12 space-y-10">
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 opacity-50">Entity Name</label>
+                    <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full h-14 px-6 bg-slate-50 border border-outline-variant/10 focus:border-primary rounded-2xl outline-none transition-all font-black text-sm uppercase tracking-tight text-on-surface" />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 opacity-50">Service Tier</label>
+                    <select name="plan_type" value={formData.plan_type} onChange={handleInputChange} className="w-full h-14 px-6 bg-slate-50 border border-outline-variant/10 focus:border-primary rounded-2xl outline-none transition-all font-black text-[10px] uppercase tracking-widest appearance-none text-on-surface" >
+                        <option value="basic">Standard Tier</option>
+                        <option value="premium">Growth Tier</option>
+                        <option value="pro">Enterprise Tier</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 opacity-50">Grace Period (Days)</label>
+                    <input type="number" name="subscription_grace_days" value={formData.subscription_grace_days} onChange={handleInputChange} className="w-full h-14 px-6 bg-slate-50 border border-outline-variant/10 focus:border-primary rounded-2xl outline-none transition-all font-bold text-sm text-on-surface" />
+                </div>
+              </div>
+
+              {/* Modules */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Capabilities</span>
+                  <div className="h-px flex-1 bg-outline-variant/10"></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                        <input type="checkbox" name="qr_menu" checked={formData.modules.qr_menu} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                        <span className="text-xs font-black uppercase tracking-widest text-on-surface">QR Ordering</span>
+                    </label>
+                    <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                        <input type="checkbox" name="inventory" checked={formData.modules.inventory} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                        <span className="text-xs font-black uppercase tracking-widest text-on-surface">Inventory</span>
+                    </label>
+                    <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                        <input type="checkbox" name="shift_management" checked={formData.modules.shift_management} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                        <span className="text-xs font-black uppercase tracking-widest text-on-surface">Shifts</span>
+                    </label>
+                    <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                        <input type="checkbox" name="ai_assistant" checked={formData.modules.ai_assistant} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                        <span className="text-xs font-black uppercase tracking-widest text-on-surface">AI Assistant</span>
+                    </label>
+                    <label className="flex items-center gap-4 p-4 rounded-2xl border border-outline-variant/10 bg-slate-50 cursor-pointer hover:border-primary transition-all">
+                        <input type="checkbox" name="whatsapp_ordering" checked={formData.modules.whatsapp_ordering} onChange={handleInputChange} className="w-5 h-5 accent-primary" />
+                        <span className="text-xs font-black uppercase tracking-widest text-on-surface">WhatsApp</span>
+                    </label>
+                </div>
+              </div>
+
+              <div className="flex gap-6 pt-10">
+                <Button type="button" onClick={() => setIsEditModalOpen(false)} variant="secondary" className="flex-1 h-16 rounded-2xl text-[10px] font-black uppercase tracking-widest" > Cancel </Button>
+                <Button type="submit" disabled={updateMutation.isPending} className="flex-1 h-16 bg-[#1a1c1d] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em]" > {updateMutation.isPending ? 'Updating...' : 'Save Configuration'} </Button>
               </div>
             </form>
           </div>

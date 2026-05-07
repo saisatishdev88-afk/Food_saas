@@ -3,197 +3,121 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ticket;
+use App\Models\TicketComment;
 use Illuminate\Http\Request;
-use App\Services\TicketsService;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
-class TicketController extends Controller {
+class TicketController extends Controller
+{
+    /**
+     * Display a listing of the tickets.
+     */
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        
+        $query = Ticket::with(['user:id,name', 'tenant:id,name']);
 
-    protected $ticket_service;
+        // Owners only see their own tenant's tickets
+        if (!$user->isSuperAdmin()) {
+            $query->where('tenant_id', $user->tenant_id);
+        }
 
-    public function __construct(TicketsService $ticket_service) {
-        $this->ticket_service = $ticket_service;
+        return response()->json($query->latest()->get());
     }
 
-    public function create(Request $request) {
+    /**
+     * Store a newly created ticket.
+     */
+    public function store(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'priority' => 'required|in:low,medium,high',
+        ]);
 
-        $username = $request->getUser();
-        $password = $request->getPassword();
+        $ticket = Ticket::create([
+            'tenant_id' => $user->tenant_id,
+            'user_id' => $user->id,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'priority' => $validated['priority'],
+            'status' => 'open',
+        ]);
 
-        $validUsername = 'apiadmin';
-        $validPassword = 'apiuser@123';
-
-        if ($username !== $validUsername || $password !== $validPassword) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Unauthorized'
-                            ], 401)->header('WWW-Authenticate', 'Basic');
-        }
-
-
-        try {
-
-            //to create a support ticket in software
-            $ticket = $this->ticket_service->createTicket($request->all());
-
-            return response()->json([
-                        'status' => true,
-                        'message' => 'Support ticket created successfully',
-                            ], 201);
-        } catch (ValidationException $e) {
-            return response()->json([
-                        'status' => false,
-                        'errors' => $e->errors()
-                            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Something went wrong',
-                        'error' => $e->getMessage()
-                            ], 500);
-        }
+        return response()->json([
+            'message' => 'Ticket created successfully',
+            'ticket' => $ticket
+        ], 201);
     }
 
-    public function chat(Request $request) {
+    /**
+     * Display the specified ticket with comments.
+     */
+    public function show(Ticket $ticket)
+    {
+        $user = Auth::user();
 
-        $username = $request->getUser();
-        $password = $request->getPassword();
-
-        $validUsername = 'apiadmin';
-        $validPassword = 'apiuser@123';
-
-        if ($username !== $validUsername || $password !== $validPassword) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Unauthorized'
-                            ], 401)->header('WWW-Authenticate', 'Basic');
+        // Security check
+        if (!$user->isSuperAdmin() && $ticket->tenant_id !== $user->tenant_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        $ticket->load(['user:id,name', 'tenant:id,name', 'comments.user:id,name']);
 
-
-
-
-        try {
-            $ticket = $this->ticket_service->reply_chat($request->all());
-
-            return response()->json([
-                        'status' => true,
-                        'message' => 'Message created successfully',
-                            ], 201);
-        } catch (ValidationException $e) {
-            return response()->json([
-                        'status' => false,
-                        'errors' => $e->errors()
-                            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Something went wrong',
-                        'error' => $e->getMessage()
-                            ], 500);
-        }
+        return response()->json($ticket);
     }
 
-    public function get_user_tickets(Request $request) {
-
-        $username = $request->getUser();
-        $password = $request->getPassword();
-
-        $validUsername = 'apiadmin';
-        $validPassword = 'apiuser@123';
-
-        if ($username !== $validUsername || $password !== $validPassword) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Unauthorized'
-                            ], 401)->header('WWW-Authenticate', 'Basic');
+    /**
+     * Update the ticket status (SuperAdmin only).
+     */
+    public function updateStatus(Request $request, Ticket $ticket)
+    {
+        if (!Auth::user()->isSuperAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        $validated = $request->validate([
+            'status' => 'required|in:open,in_progress,resolved',
+        ]);
 
+        $ticket->update(['status' => $validated['status']]);
 
-
-        try {
-            $user_id = $request->query('user_id');
-
-            if (!$user_id) {
-                return response()->json([
-                            'status' => false,
-                            'message' => 'user_id is required',
-                            'data' => []
-                                ], 400);
-            }
-            DB::enableQueryLog();
-            $tickets = $this->ticket_service->getTicketsByUserId($user_id);
-
-//            $queries = DB::getQueryLog();
-//            $lastQuery = end($queries);
-//            print_r($lastQuery);
-//            die;
-//            print_r($tickets);
-//            die;
-            return response()->json([
-                        'status' => !empty($tickets) && count($tickets) > 0,
-                        'data' => $tickets ?? []
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                        'error' => 'Something went wrong',
-                        'message' => $e->getMessage(),
-                        'data' => []
-                            ], 500);
-        }
+        return response()->json([
+            'message' => 'Ticket status updated',
+            'ticket' => $ticket
+        ]);
     }
 
-    public function get_ticket_details(Request $request) {
+    /**
+     * Add a comment to the ticket.
+     */
+    public function addComment(Request $request, Ticket $ticket)
+    {
+        $user = Auth::user();
 
-        $username = $request->getUser();
-        $password = $request->getPassword();
-
-        $validUsername = 'apiadmin';
-        $validPassword = 'apiuser@123';
-
-        if ($username !== $validUsername || $password !== $validPassword) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Unauthorized'
-                            ], 401)->header('WWW-Authenticate', 'Basic');
+        // Security check
+        if (!$user->isSuperAdmin() && $ticket->tenant_id !== $user->tenant_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        try {
+        $validated = $request->validate([
+            'message' => 'required|string',
+        ]);
 
-            //ticket conversation chat
-            $ticket_id = $request->query('ticket_id');
+        $comment = $ticket->comments()->create([
+            'user_id' => $user->id,
+            'message' => $validated['message'],
+        ]);
 
-            if (!$ticket_id) {
-                return response()->json([
-                            'status' => false,
-                            'message' => 'ticket_id is required',
-                            'data' => []
-                                ], 400);
-            }
-            DB::enableQueryLog();
-            $result = $this->ticket_service->get_ticket_conversation($ticket_id);
-
-//            $queries = DB::getQueryLog();
-//            $lastQuery = end($queries);
-//            print_r($lastQuery);
-//            die;
-            //print_r($result);die;
-            return response()->json([
-                        'status' => true,
-                        'ticket_details' => $result['ticket'],
-                        'conversation' => $result['conversation'] ?? []
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                        'status' => false,
-                        'message' => 'Something went wrong',
-                        'error' => $e->getMessage(),
-                        'data' => []
-                            ], 500);
-        }
+        return response()->json([
+            'message' => 'Comment added successfully',
+            'comment' => $comment->load('user:id,name')
+        ], 201);
     }
 }
 
-?>

@@ -163,37 +163,66 @@ export default function SaasDashboardPage() {
         </Card>
 
         {/* Global Activity Pulse - 5/12 col */}
-        <Card className="lg:col-span-5 bg-white border border-outline-variant/10 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden flex flex-col">
-            <h3 className="text-lg font-black font-headline uppercase italic mb-8 flex items-center gap-4">
-                <span className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-lg">history</span>
-                </span>
-                Payment Pulse
-            </h3>
-            <div className="flex-1 space-y-4 relative">
-                {stats?.ai_forecast?.payment_history?.map((pay: any) => (
-                    <div key={pay.id} className="flex justify-between items-center p-4 rounded-2xl bg-slate-50 border border-outline-variant/5">
-                        <div className="flex items-center gap-4">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${pay.status === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
-                                <span className="material-symbols-outlined text-sm">{pay.status === 'success' ? 'check_circle' : 'cancel'}</span>
+        <div className="lg:col-span-5 space-y-8">
+            <Card className="bg-white border border-outline-variant/10 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden flex flex-col">
+                <h3 className="text-lg font-black font-headline uppercase italic mb-8 flex items-center gap-4">
+                    <span className="w-9 h-9 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-lg">history</span>
+                    </span>
+                    Payment Pulse
+                </h3>
+                <div className="flex-1 space-y-4 relative">
+                    {stats?.ai_forecast?.payment_history?.map((pay: any) => (
+                        <div key={pay.id} className="flex justify-between items-center p-4 rounded-2xl bg-slate-50 border border-outline-variant/5">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${pay.status === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+                                    <span className="material-symbols-outlined text-sm">{pay.status === 'success' ? 'check_circle' : 'cancel'}</span>
+                                </div>
+                                <div>
+                                    <p className="text-[11px] font-black uppercase tracking-tight text-on-surface">{pay.restaurant}</p>
+                                    <p className="text-[9px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">{pay.date}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-[11px] font-black uppercase tracking-tight text-on-surface">{pay.restaurant}</p>
-                                <p className="text-[9px] font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">{pay.date}</p>
+                            <div className="text-right">
+                                <p className="text-xs font-black text-on-surface tabular-nums">₹{pay.amount.toLocaleString()}</p>
+                                <span className={`text-[8px] font-bold uppercase tracking-widest ${pay.status === 'success' ? 'text-emerald-500' : 'text-red-500'}`}>{pay.status}</span>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <p className="text-xs font-black text-on-surface tabular-nums">₹{pay.amount.toLocaleString()}</p>
-                            <span className={`text-[8px] font-bold uppercase tracking-widest ${pay.status === 'success' ? 'text-emerald-500' : 'text-red-500'}`}>{pay.status}</span>
-                        </div>
-                    </div>
-                ))}
-                {!stats?.ai_forecast?.payment_history && (
-                    <div className="py-10 text-center opacity-20 italic text-[10px] uppercase font-black tracking-widest">No Recent Flow Detected</div>
-                )}
-            </div>
-            <Button variant="ghost" className="mt-8 w-full h-11 border border-outline-variant/5 text-[9px] font-black uppercase tracking-widest opacity-40 hover:opacity-100 transition-all">Full Revenue Audit</Button>
-        </Card>
+                    ))}
+                    {(!stats?.ai_forecast?.payment_history || stats?.ai_forecast?.payment_history.length === 0) && (
+                        <div className="py-10 text-center opacity-20 italic text-[10px] uppercase font-black tracking-widest">No Recent Flow Detected</div>
+                    )}
+                </div>
+            </Card>
+
+            <Card className="bg-white border border-outline-variant/10 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden flex flex-col">
+                <h3 className="text-lg font-black font-headline uppercase italic mb-6 flex items-center gap-4">
+                    <span className="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-lg">event_busy</span>
+                    </span>
+                    Node Expiry Monitor
+                </h3>
+                <div className="space-y-3">
+                    {tenants.filter((t: any) => t.subscription_expires_at).map((t: any) => {
+                        const expiry = new Date(t.subscription_expires_at);
+                        const isExpired = expiry < new Date();
+                        return (
+                            <div key={t.id} className="flex justify-between items-center p-3 rounded-xl bg-slate-50">
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-tight text-on-surface">{t.name}</p>
+                                    <p className={`text-[8px] font-bold uppercase tracking-widest ${isExpired ? 'text-red-500' : 'text-on-surface-variant/40'}`}>
+                                        {isExpired ? 'Expired' : 'Expires'}: {expiry.toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${isExpired ? 'bg-red-500 text-white' : 'bg-amber-100 text-amber-700'}`}>
+                                    {isExpired ? 'HALT' : 'WARN'}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </Card>
+        </div>
       </section>
     </div>
   );

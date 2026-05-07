@@ -208,6 +208,9 @@ class OrderController extends Controller
             'live_orders' => $liveOrders,
             'plan_type' => auth()->user()->tenant->plan_type,
             'subscription_expires_at' => auth()->user()->tenant->subscription_expires_at,
+            'subscription_grace_days' => auth()->user()->tenant->subscription_grace_days ?? 3,
+            'is_first_subscription' => (bool)auth()->user()->tenant->is_first_subscription,
+            'is_subscription_expired' => auth()->user()->tenant->isSubscriptionExpired(),
             'orders_by_type' => [
                 'pos' => $ordersByType['offline'] ?? 0,
                 'qr' => $ordersByType['online'] ?? 0,
@@ -246,11 +249,59 @@ class OrderController extends Controller
             'status' => 'required|in:pending,accepted,preparing,ready,delivered,cancelled',
             'payment_status' => 'sometimes|in:pending,paid,failed',
             'payment_method' => 'sometimes|string',
-            'type' => 'sometimes|in:offline,online'
+            'type' => 'sometimes|in:offline,online,whatsapp'
         ]);
 
+        $oldStatus = $order->status;
         $order->update($validated);
+
+        // Notify WhatsApp customer if status changed and it's a WhatsApp order
+        if ($order->type === 'whatsapp' && $order->customer_phone && $oldStatus !== $order->status) {
+            $this->notifyWhatsAppCustomer($order);
+        }
+
         return response()->json($order);
+    }
+
+    private function notifyWhatsAppCustomer(Order $order)
+    {
+        $tenant = $order->tenant;
+        if (!$tenant || empty($tenant->whatsapp_config)) return;
+
+        $status = ucfirst($order->status);
+        $emoji = match($order->status) {
+            'accepted' => '✅',
+            'preparing' => '👨‍🍳',
+            'ready' => '🔔',
+            'delivered' => '🚚',
+            'cancelled' => '❌',
+            default => '📄'
+        };
+
+        $message = "Your Order #{$order->id} status has been updated to $emoji *{$status}*";
+        
+        if ($order->status === 'ready') {
+            $message .= "\n\n🎁 Your food is ready for pickup! Please head to the counter.";
+        } elseif ($order->status === 'preparing') {
+            $message .= "\n\nOur chefs are now preparing your meal! 🔥";
+        }
+
+        // We can reuse the WhatsAppController logic or call it
+        try {
+            $config = $tenant->whatsapp_config;
+            $jid = str_contains($order->customer_phone, '@') ? $order->customer_phone : $order->customer_phone . '@s.whatsapp.net';
+            
+            \Illuminate\Support\Facades\Http::withHeaders([
+                'X-API-KEY' => $config['api_key'],
+                'X-INSTANCE-ID' => $config['instance_id'],
+                'Content-Type' => 'application/json'
+            ])->post("https://api.wsapi.chat/messages/text", [
+                'to' => $jid,
+                'text' => $message
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("WhatsApp Status Notification Failed: " . $e->getMessage());
+        }
     }
 
     public function show(Order $order)

@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\TenantStaffController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/dashboard', [SuperAdminController::class, 'dashboard']);
         Route::get('/tenants', [SuperAdminController::class, 'listTenants']);
         Route::post('/tenants', [SuperAdminController::class, 'createTenant']);
+        Route::put('/tenants/{tenant}', [SuperAdminController::class, 'updateTenant']);
+
+        // Support Tickets
+        Route::get('/tickets', [TicketController::class, 'index']);
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show']);
+        Route::put('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+        Route::post('/tickets/{ticket}/comments', [TicketController::class, 'addComment']);
     });
 
     // Restaurant Management (Owner/Admin/Manager/Staff)
@@ -76,6 +85,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // WhatsApp Ordering
         Route::post('/whatsapp/config', [\App\Http\Controllers\Api\WhatsAppController::class, 'updateConfig']);
+
+        // Support Tickets
+        Route::get('/tickets', [TicketController::class, 'index']);
+        Route::post('/tickets', [TicketController::class, 'store']);
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show']);
+        Route::post('/tickets/{ticket}/comments', [TicketController::class, 'addComment']);
+
+        // Subscriptions
+        Route::get('/subscription/plans', [SubscriptionController::class, 'getPlans']);
+        Route::post('/subscription/renew', [SubscriptionController::class, 'renew']);
+        Route::post('/subscription/upgrade', [SubscriptionController::class, 'upgrade']);
     });
 
     // Generic Profile

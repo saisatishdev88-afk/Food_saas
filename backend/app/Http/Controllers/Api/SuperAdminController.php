@@ -144,6 +144,7 @@ class SuperAdminController extends Controller
             'owner_email' => 'required|email|unique:users,email',
             'owner_password' => 'required|string|min:6',
             'modules' => 'nullable|array',
+            'subscription_grace_days' => 'nullable|integer|min:0',
         ]);
 
         $tenant = Tenant::create([
@@ -152,6 +153,8 @@ class SuperAdminController extends Controller
             'email' => $validated['email'],
             'plan_type' => $validated['plan_type'],
             'subscription_expires_at' => now()->addDays(30),
+            'subscription_grace_days' => $validated['subscription_grace_days'] ?? 3,
+            'is_first_subscription' => true,
             'modules' => $validated['modules'] ?? [
                 'qr_menu' => false,
                 'inventory' => false,
@@ -187,6 +190,29 @@ class SuperAdminController extends Controller
             'tenant' => $tenant,
             'owner' => $owner
         ], 201);
+    }
+
+    /**
+     * Update an existing restaurant's details.
+     */
+    public function updateTenant(Request $request, Tenant $tenant)
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'plan_type' => 'sometimes|in:basic,premium,pro',
+            'status' => 'sometimes|in:active,inactive',
+            'modules' => 'sometimes|array',
+            'subscription_grace_days' => 'sometimes|integer|min:0',
+            'subscription_expires_at' => 'sometimes|date',
+            'is_first_subscription' => 'sometimes|boolean',
+        ]);
+
+        $tenant->update($validated);
+
+        return response()->json([
+            'message' => 'Restaurant node updated successfully',
+            'tenant' => $tenant
+        ]);
     }
 
     /**

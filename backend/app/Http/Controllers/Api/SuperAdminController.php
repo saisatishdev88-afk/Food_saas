@@ -29,13 +29,89 @@ class SuperAdminController extends Controller
             return response()->json(['message' => 'Invalid Superadmin credentials'], 401);
         }
 
-        $token = $user->createToken('superadmin-token', ['all-access'])->plainTextToken;
+        // 2-Device Limit Check
+        if ($user->tokens()->count() >= 2) {
+            return response()->json([
+                'message' => 'Device limit reached. You are logged in on 2 devices. Please logout from other devices first.',
+                'sessions' => $this->formatSessions($user)
+            ], 403);
+        }
+
+        $tokenResult = $user->createToken('superadmin-token', ['all-access']);
+        
+        // Save metadata
+        $tokenResult->accessToken->update([
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'last_active_at' => now(),
+        ]);
 
         return response()->json([
             'user' => $user,
-            'token' => $token,
+            'token' => $tokenResult->plainTextToken,
             'role' => $user->role,
         ]);
+    }
+
+    /**
+     * Helper to format user sessions.
+     */
+    private function formatSessions($user)
+    {
+        return $user->tokens->map(function ($token) {
+            return [
+                'id' => $token->id,
+                'device' => $token->name,
+                'ip_address' => $token->ip_address,
+                'user_agent' => $token->user_agent,
+                'last_activity' => $token->last_active_at ? $token->last_active_at->diffForHumans() : 'Unknown',
+                'created_at' => $token->created_at->toISOString(),
+            ];
+        });
+    }
+
+    /**
+     * Get active sessions for a user (or current user).
+     */
+    public function getActiveSessions(Request $request, $userId = null)
+    {
+        $user = $userId ? User::findOrFail($userId) : auth()->user();
+        return response()->json([
+            'sessions' => $this->formatSessions($user)
+        ]);
+    }
+
+    /**
+     * Logout a specific session.
+     */
+    public function logoutSession($tokenId)
+    {
+        $token = auth()->user()->tokens()->where('id', $tokenId)->first();
+        if (!$token) {
+            return response()->json(['message' => 'Session not found'], 404);
+        }
+        $token->delete();
+        return response()->json(['message' => 'Session terminated successfully']);
+    }
+
+    /**
+     * Logout all sessions except current one.
+     */
+    public function logoutAllSessions()
+    {
+        $user = auth()->user();
+        $user->tokens()->where('id', '!=', $user->currentAccessToken()->id)->delete();
+        return response()->json(['message' => 'All other sessions terminated successfully']);
+    }
+
+    /**
+     * Logout ALL sessions (Force logout).
+     */
+    public function forceLogoutAll($userId)
+    {
+        $user = User::findOrFail($userId);
+        $user->tokens()->delete();
+        return response()->json(['message' => "All sessions for {$user->name} have been terminated"]);
     }
 
     /**
@@ -222,6 +298,7 @@ class SuperAdminController extends Controller
     {
         $tenant = Tenant::where('domain', $domain)->firstOrFail();
         return response()->json([
+            'id' => $tenant->id,
             'name' => $tenant->name,
             'logo' => $tenant->logo,
             'banner_url' => $tenant->banner_url ?? 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200',

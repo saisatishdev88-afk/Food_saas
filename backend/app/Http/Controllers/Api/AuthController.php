@@ -39,14 +39,57 @@ class AuthController extends Controller
             }
         }
 
-        // Generate token (generic ability for now)
-        $token = $user->createToken('auth-token', ['all-access'])->plainTextToken;
+        // 2-Device Limit Check
+        if ($user->tokens()->count() >= 2) {
+            return response()->json([
+                'message' => 'Device limit reached. You are logged in on 2 devices. Please logout from other devices first.',
+                'sessions' => $user->tokens->map(function ($token) {
+                    return [
+                        'id' => $token->id,
+                        'device' => $token->name,
+                        'ip' => $token->ip_address,
+                        'last_active' => $token->last_active_at ? $token->last_active_at->diffForHumans() : 'Unknown'
+                    ];
+                })
+            ], 403);
+        }
+
+        // Generate token
+        $tokenResult = $user->createToken('auth-token', ['all-access']);
+        
+        // Save metadata
+        $tokenResult->accessToken->update([
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'last_active_at' => now(),
+        ]);
 
         return response()->json([
             'user' => $user->load('tenant'),
-            'token' => $token,
+            'token' => $tokenResult->plainTextToken,
             'role' => $user->role,
         ]);
+    }
+
+    /**
+     * Clear all sessions for a user (used for conflict resolution).
+     */
+    public function clearSessions(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        $user->tokens()->delete();
+
+        return response()->json(['message' => 'All sessions cleared successfully']);
     }
 
     /**

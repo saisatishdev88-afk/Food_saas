@@ -25,6 +25,7 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
     { name: 'Restaurants', href: '/saas/restaurants', icon: 'storefront' },
     { name: 'Subscriptions', href: '/saas/subscriptions', icon: 'payments' },
     { name: 'Support Tickets', href: '/saas/tickets', icon: 'confirmation_number' },
+    { name: 'Devices', href: '/saas/devices', icon: 'devices' },
   ];
 
   return (

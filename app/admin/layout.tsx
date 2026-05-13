@@ -72,6 +72,7 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
     { name: 'Order History', href: '/admin/orders', icon: 'receipt_long' },
     { name: 'Point of Sale', href: '/pos', icon: 'point_of_sale' },
     { name: 'Kitchen KDS', href: '/kitchen', icon: 'soup_kitchen' },
+    { name: 'Table Manager', href: '/admin/tables', icon: 'table_restaurant' },
   ];
 
   if (modules.qr_menu) navItems.push({ name: 'QR Ordering', href: '/admin/qr-menu', icon: 'qr_code_scanner' });
@@ -81,6 +82,10 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   if (modules.whatsapp_ordering) navItems.push({ name: 'WhatsApp', href: '/admin/whatsapp', icon: 'chat' });
   navItems.push({ name: 'Subscription', href: '/admin/subscription', icon: 'payments' });
   navItems.push({ name: 'Help & Support', href: '/admin/tickets', icon: 'help_outline' });
+
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
     <TenantGuard>

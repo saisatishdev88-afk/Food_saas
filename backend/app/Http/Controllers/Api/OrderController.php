@@ -139,6 +139,17 @@ class OrderController extends Controller
                 }
             }
 
+            // Check if table is already occupied
+            if ($validated['table_number']) {
+                $table = \App\Models\RestaurantTable::where('tenant_id', $tenant->id)
+                    ->where('table_number', $validated['table_number'])
+                    ->first();
+                
+                if ($table && $table->isOccupied()) {
+                    return response()->json(['message' => 'This table is already occupied. Please contact a waiter.'], 403);
+                }
+            }
+
             // Temporarily disable global scopes for Order creation since no auth user
             $order = Order::withoutGlobalScopes()->create([
                 'order_number' => $prefix . '-' . strtoupper(Str::random(6)),
@@ -156,6 +167,15 @@ class OrderController extends Controller
 
             foreach ($orderItems as $item) {
                 $order->items()->create($item);
+            }
+
+            // Lock the table if table_number is provided
+            if ($validated['table_number']) {
+                $table = \App\Models\RestaurantTable::firstOrCreate(
+                    ['tenant_id' => $tenant->id, 'table_number' => $validated['table_number']],
+                    ['status' => 'available']
+                );
+                $table->lock(Str::random(32), $order->id);
             }
 
             return response()->json($order->load('items'), 201);

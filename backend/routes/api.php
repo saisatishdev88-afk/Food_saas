@@ -17,11 +17,19 @@ use App\Http\Controllers\Api\SubscriptionController;
 // Unified Auth
 Route::post('/admin/login', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login/clear-sessions', [AuthController::class, 'clearSessions']);
 
 // Public QR Menu & Ordering
 Route::get('/public/tenant/{domain}', [\App\Http\Controllers\Api\SuperAdminController::class, 'publicTenantInfo']);
 Route::get('/public/menu/{domain}', [\App\Http\Controllers\Api\MenuController::class, 'publicIndex']);
 Route::post('/public/orders/{domain}', [\App\Http\Controllers\Api\OrderController::class, 'publicStore']);
+Route::get('/public/table/{domain}/{tableNumber}/status', [\App\Http\Controllers\Api\TableController::class, 'checkStatus']);
+
+// Social Group Ordering
+Route::post('/group-orders/start', [\App\Http\Controllers\Api\GroupOrderController::class, 'startSession']);
+Route::get('/group-orders/{token}', [\App\Http\Controllers\Api\GroupOrderController::class, 'getSession']);
+Route::post('/group-orders/{token}/items', [\App\Http\Controllers\Api\GroupOrderController::class, 'addItem']);
+Route::post('/group-orders/{token}/finalize', [\App\Http\Controllers\Api\GroupOrderController::class, 'finalizeOrder']);
 
 // Public WhatsApp Webhook (Required for WSAPI integration)
 Route::post('/whatsapp/webhook', [\App\Http\Controllers\Api\WhatsAppController::class, 'webhook']);
@@ -41,6 +49,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/tickets/{ticket}', [TicketController::class, 'show']);
         Route::put('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
         Route::post('/tickets/{ticket}/comments', [TicketController::class, 'addComment']);
+
+        // Device Management
+        Route::get('/sessions/{userId?}', [SuperAdminController::class, 'getActiveSessions']);
+        Route::delete('/sessions/{tokenId}', [SuperAdminController::class, 'logoutSession']);
+        Route::delete('/sessions-all', [SuperAdminController::class, 'logoutAllSessions']);
+        Route::delete('/force-logout/{userId}', [SuperAdminController::class, 'forceLogoutAll']);
     });
 
     // Restaurant Management (Owner/Admin/Manager/Staff)
@@ -96,6 +110,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/subscription/plans', [SubscriptionController::class, 'getPlans']);
         Route::post('/subscription/renew', [SubscriptionController::class, 'renew']);
         Route::post('/subscription/upgrade', [SubscriptionController::class, 'upgrade']);
+
+        // Table Management
+        Route::get('/tables', [\App\Http\Controllers\Api\TableController::class, 'index']);
+        Route::post('/tables', [\App\Http\Controllers\Api\TableController::class, 'store']);
+        Route::post('/tables/{id}/release', [\App\Http\Controllers\Api\TableController::class, 'release']);
     });
 
     // Generic Profile

@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [deviceConflict, setDeviceConflict] = useState<any>(null);
   const { success, error: toastError } = useToast();
 
   const dispatch = useDispatch();
@@ -44,11 +45,31 @@ export default function LoginPage() {
       success('Authentication successful! Loading your dashboard...');
 
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Authentication failed. Please check your credentials.';
-      setError(msg);
-      toastError(msg);
+      if (err.response?.status === 403 && err.response?.data?.sessions) {
+        setDeviceConflict(err.response.data);
+      } else {
+        const msg = err.response?.data?.message || 'Authentication failed. Please check your credentials.';
+        setError(msg);
+        toastError(msg);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForceLogoutAll = async () => {
+    try {
+        setLoading(true);
+        // We need an email to force logout. The backend currently takes userId.
+        // We might need to adjust the backend or use a different endpoint.
+        // For now, let's assume we can trigger a 'clear-sessions' endpoint with email/pass.
+        await api.post('/login/clear-sessions', { email, password });
+        setDeviceConflict(null);
+        success('All other sessions cleared. You can now sign in.');
+    } catch (err: any) {
+        toastError(err.response?.data?.message || 'Failed to clear sessions');
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -130,6 +151,55 @@ export default function LoginPage() {
           © 2024 Foodsoul Culinary Systems. <br className="md:hidden" /> All rights reserved.
         </footer>
       </main>
+
+      {/* Device Conflict Modal */}
+      {deviceConflict && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+              <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300">
+                  <div className="w-16 h-16 bg-error/10 text-error rounded-2xl flex items-center justify-center mb-6">
+                      <span className="material-symbols-outlined text-3xl">devices_off</span>
+                  </div>
+                  <h3 className="text-2xl font-black uppercase italic mb-2">Device Limit Reached</h3>
+                  <p className="text-on-surface-variant text-[10px] font-black uppercase tracking-widest opacity-40 mb-8">
+                      You are already logged in on {deviceConflict.sessions.length} devices. Netflix style, you need to logout from them to continue.
+                  </p>
+                  
+                  <div className="space-y-3 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      {deviceConflict.sessions.map((s: any) => (
+                          <div key={s.id} className="p-4 bg-slate-50 rounded-2xl border border-outline-variant/10 flex justify-between items-center group hover:bg-slate-100 transition-colors">
+                              <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                                      <span className="material-symbols-outlined text-primary text-sm">laptop_mac</span>
+                                  </div>
+                                  <div>
+                                      <p className="text-[10px] font-black uppercase tracking-tight text-on-surface">{s.ip || s.device || 'Previous Session'}</p>
+                                      <p className="text-[9px] font-bold text-on-surface-variant opacity-60 uppercase">{s.last_active || 'Inactive'}</p>
+                                  </div>
+                              </div>
+                              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                          </div>
+                      ))}
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    <Button 
+                        onClick={handleForceLogoutAll}
+                        disabled={loading}
+                        className="w-full h-14 bg-primary text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center justify-center gap-2"
+                    >
+                        {loading ? 'Clearing...' : 'Logout from All Devices'}
+                        <span className="material-symbols-outlined text-sm">logout</span>
+                    </Button>
+                    <button 
+                        onClick={() => setDeviceConflict(null)}
+                        className="w-full h-14 bg-slate-50 text-on-surface/40 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-outline-variant/10"
+                    >
+                        Cancel
+                    </button>
+                  </div>
+              </div>
+          </div>
+      )}
     </div>
   );
 }

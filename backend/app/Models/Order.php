@@ -36,4 +36,10 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function restaurantTable()
+    {
+        return $this->belongsTo(RestaurantTable::class, 'table_number', 'table_number')
+                    ->where('tenant_id', $this->tenant_id);
+    }
 }

@@ -23,6 +23,7 @@ export default function WhatsAppSetupPage() {
     const [config, setConfig] = useState({
         business_number: '',
         instance_id: '',
+        subscription_id: '',
         api_key: '',
         webhook_token: '',
         welcome_message: 'Hi 👋 Welcome to our restaurant!\n\nReply:\n1 for Menu\n2 to Track Order',
@@ -106,7 +107,7 @@ export default function WhatsAppSetupPage() {
                     </div>
                     <Button 
                         onClick={() => setIsEditing(!isEditing)}
-                        variant={isEditing ? 'secondary' : 'primary'}
+                        variant={isEditing ? 'secondary' : 'default'}
                         className="h-12 px-6 rounded-xl font-black uppercase tracking-widest text-[9px] border-none"
                     >
                         {isEditing ? 'Discard Changes' : 'Update Credentials'}

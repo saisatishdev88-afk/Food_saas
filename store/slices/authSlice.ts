@@ -33,10 +33,12 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('role');
-        localStorage.removeItem('loginTime');
+        const isSaas = window.location.pathname.startsWith('/saas') || window.location.pathname.startsWith('/admin/login');
+        const prefix = isSaas ? 'saas_' : 'tenant_';
+        localStorage.removeItem(`${prefix}token`);
+        localStorage.removeItem(`${prefix}user`);
+        localStorage.removeItem(`${prefix}role`);
+        localStorage.removeItem(`${prefix}loginTime`);
       }
     },
   },

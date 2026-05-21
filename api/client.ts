@@ -12,7 +12,9 @@ api.interceptors.request.use((config) => {
   // We can't access Redux store directly here easily without circular dependencies sometimes,
   // but we can either pass token manually or read from localStorage if stored there.
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
+    const isSaas = window.location.pathname.startsWith('/saas') || window.location.pathname.startsWith('/admin/login');
+    const prefix = isSaas ? 'saas_' : 'tenant_';
+    const token = localStorage.getItem(`${prefix}token`);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

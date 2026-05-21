@@ -15,6 +15,8 @@ type Ticket = {
     status: 'open' | 'in_progress' | 'resolved';
     created_at: string;
     comments_count?: number;
+    user_id?: number;
+    comments?: any[];
 };
 
 export default function TenantTicketsPage() {
@@ -37,7 +39,7 @@ export default function TenantTicketsPage() {
     // Fetch Single Ticket Details (for chat)
     const { data: activeTicket, isLoading: isActiveLoading } = useQuery({
         queryKey: ['ticket', selectedTicketId],
-        queryFn: async () => {
+        queryFn: async (): Promise<Ticket | null> => {
             if (!selectedTicketId) return null;
             const res = await api.get(`/tenant/tickets/${selectedTicketId}`);
             return res.data;

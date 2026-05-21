@@ -32,10 +32,10 @@ export default function LoginPage() {
       // Hit the real unified backend login
       const { data } = await api.post('/login', { email, password });
       
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('loginTime', Date.now().toString());
+      localStorage.setItem('tenant_token', data.token);
+      localStorage.setItem('tenant_user', JSON.stringify(data.user));
+      localStorage.setItem('tenant_role', data.role);
+      localStorage.setItem('tenant_loginTime', Date.now().toString());
 
       dispatch(setCredentials({
         user: data.user,

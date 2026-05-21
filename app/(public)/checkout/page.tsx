@@ -8,6 +8,7 @@ import { RootState } from '@/store';
 import { clearCart } from '@/store/slices/cartSlice';
 import { addOrder } from '@/store/slices/ordersSlice';
 import { createPublicOrder } from '@/api/menu';
+import { initiatePublicPayment, verifyPublicPayment } from '@/api/orders';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
@@ -61,12 +62,26 @@ export default function CheckoutPage() {
   const deliverySurcharge = displayItems.length > 0 ? 4.50 : 0;
   const total = subtotal + deliverySurcharge;
 
-  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [isHost, setIsHost] = useState(false);
 
   React.useEffect(() => {
     setIsHost(localStorage.getItem('is_group_host') === 'true');
   }, []);
+
+  const loadRazorpayScript = () => {
+    return new Promise<boolean>((resolve) => {
+      if (typeof window !== 'undefined' && (window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
 
   const handlePlaceOrder = async () => {
     if (displayItems.length === 0) return;
@@ -74,6 +89,74 @@ export default function CheckoutPage() {
 
     if (tenant) {
       setIsSubmitting(true);
+
+      if (paymentMethod === 'razorpay') {
+        try {
+          const scriptLoaded = await loadRazorpayScript();
+          if (!scriptLoaded) {
+            error('Razorpay SDK failed to load. Are you online?');
+            setIsSubmitting(false);
+            return;
+          }
+
+          const initData = await initiatePublicPayment(tenant, {
+            items: localItems.map(i => ({ menu_item_id: Number(i.id), quantity: i.quantity })),
+            table_number: table || formData.address,
+            notes: '',
+            customer_name: formData.fullName || 'Guest Customer',
+            customer_phone: formData.phone || '',
+            fulfillment_type: table ? 'dine_in' : 'takeaway',
+            type: 'online'
+          });
+
+          const options = {
+            key: initData.key_id,
+            amount: initData.amount,
+            currency: initData.currency,
+            name: initData.restaurant_name,
+            description: 'Online Food Ordering Payment',
+            order_id: initData.razorpay_order_id,
+            handler: async (response: any) => {
+              try {
+                const verifyData = await verifyPublicPayment(tenant, {
+                  temp_order_id: initData.temp_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature
+                });
+                
+                dispatch(clearCart());
+                success('Payment successful! Order confirmed.');
+                setTimeout(() => router.push(`/menu${queryStr}`), 1000);
+              } catch (err: any) {
+                error('Payment verification failed: ' + (err.response?.data?.message || err.message));
+                setIsSubmitting(false);
+              }
+            },
+            prefill: {
+              name: formData.fullName || 'Guest Customer',
+              contact: formData.phone || ''
+            },
+            theme: {
+              color: '#a63300'
+            },
+            modal: {
+              ondismiss: () => {
+                error('Payment cancelled by user.');
+                setIsSubmitting(false);
+              }
+            }
+          };
+
+          const rzp = new (window as any).Razorpay(options);
+          rzp.open();
+        } catch (err: any) {
+          error('Failed to initiate online payment: ' + (err.response?.data?.message || err.message));
+          setIsSubmitting(false);
+        }
+        return;
+      }
+
       try {
         if (groupId) {
             await api.post(`/group-orders/${groupId}/finalize`);
@@ -186,7 +269,12 @@ export default function CheckoutPage() {
                     <span className="material-symbols-outlined text-[#a63300]">payments</span>
                     <h2 className="text-xl font-bold tracking-tight uppercase text-[#595c5d]">Settlement Method</h2>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <button onClick={() => setPaymentMethod('razorpay')} className={`group flex flex-col items-start p-6 bg-white border-2 hover:border-[#a63300]/20 focus:border-[#a63300] rounded-xl transition-all text-left shadow-sm ${paymentMethod === 'razorpay' ? 'border-[#a63300]' : 'border-transparent'}`}>
+                      <span className="material-symbols-outlined text-[#a63300] text-3xl mb-4">account_balance</span>
+                      <span className="font-bold text-lg">Pay Online</span>
+                      <span className="text-sm text-[#595c5d]">UPI, Netbanking, Cards</span>
+                    </button>
                     <button onClick={() => setPaymentMethod('card')} className={`group flex flex-col items-start p-6 bg-white border-2 hover:border-[#a63300]/20 focus:border-[#a63300] rounded-xl transition-all text-left shadow-sm ${paymentMethod === 'card' ? 'border-[#a63300]' : 'border-transparent'}`}>
                       <span className="material-symbols-outlined text-[#a63300] text-3xl mb-4">credit_card</span>
                       <span className="font-bold text-lg">Bank Card</span>

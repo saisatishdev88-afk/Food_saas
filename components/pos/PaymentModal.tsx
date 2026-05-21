@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateOrderStatus } from '@/api/orders';
+import { updateOrderStatus, initiatePOSOrderPayment, verifyPOSOrderPayment } from '@/api/orders';
 import { Button } from '@/components/ui/Button';
 
 interface PaymentModalProps {
@@ -18,6 +18,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, amount, order
   const queryClient = useQueryClient();
   const [step, setStep] = useState<'method' | 'qr'>('method');
   const [isPolled, setIsPolled] = useState(false);
+  const [isRazorpayLoading, setIsRazorpayLoading] = useState(false);
 
   const paymentMutation = useMutation({
     mutationFn: (data: { status: any, payment_status: any, payment_method: string, type: string }) => 
@@ -27,6 +28,77 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, amount, order
         queryClient.invalidateQueries({ queryKey: ['kitchen-orders'] });
     }
   });
+
+  const loadRazorpayScript = () => {
+    return new Promise<boolean>((resolve) => {
+      if (typeof window !== 'undefined' && (window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRazorpayPayment = async () => {
+    setIsRazorpayLoading(true);
+    try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert('Razorpay SDK failed to load. Are you online?');
+        setIsRazorpayLoading(false);
+        return;
+      }
+
+      const initData = await initiatePOSOrderPayment(numericId);
+
+      const options = {
+        key: initData.key_id,
+        amount: initData.amount,
+        currency: initData.currency,
+        name: initData.restaurant_name,
+        description: `POS Order #${orderId} Payment`,
+        order_id: initData.razorpay_order_id,
+        handler: async (response: any) => {
+          try {
+            await verifyPOSOrderPayment(numericId, {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            });
+            
+            queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+            queryClient.invalidateQueries({ queryKey: ['kitchen-orders'] });
+
+            setIsPolled(true);
+            setStep('qr');
+            onSuccess();
+          } catch (err: any) {
+            alert('Payment verification failed: ' + (err.response?.data?.message || err.message));
+          } finally {
+            setIsRazorpayLoading(false);
+          }
+        },
+        theme: {
+          color: '#2563eb'
+        },
+        modal: {
+          ondismiss: () => {
+            setIsRazorpayLoading(false);
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      alert('Failed to initiate Razorpay payment: ' + (err.response?.data?.message || err.message));
+      setIsRazorpayLoading(false);
+    }
+  };
 
   const handleSuccess = (method: string) => {
     paymentMutation.mutate({ 
@@ -73,6 +145,25 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, amount, order
             <p className="text-on-surface-variant font-medium mb-8">Amount Due: <span className="text-primary font-black">₹{amount.toFixed(2)}</span></p>
             
             <div className="grid grid-cols-1 gap-4 w-full">
+                <button 
+                    disabled={isRazorpayLoading}
+                    onClick={handleRazorpayPayment}
+                    className="flex justify-between items-center p-6 bg-surface-container-low hover:bg-surface-container-high rounded-2xl transition-all border border-outline-variant/5 disabled:opacity-50"
+                >
+                    <div className="flex items-center gap-4 text-left">
+                        <span className="material-symbols-outlined text-blue-600">account_balance</span>
+                        <div>
+                            <p className="font-bold uppercase tracking-widest text-[10px] text-blue-600">Razorpay</p>
+                            <p className="font-bold text-lg leading-tight uppercase italic">Pay Online</p>
+                        </div>
+                    </div>
+                    {isRazorpayLoading ? (
+                        <span className="material-symbols-outlined animate-spin text-blue-600">sync</span>
+                    ) : (
+                        <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+                    )}
+                </button>
+
                 <button 
                     onClick={() => setStep('qr')}
                     className="flex justify-between items-center p-6 bg-surface-container-low hover:bg-surface-container-high rounded-2xl transition-all border border-outline-variant/5"

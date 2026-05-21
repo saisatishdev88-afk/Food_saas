@@ -84,11 +84,16 @@ export default function PosPage() {
 
   const [activeCategory, setActiveCategory] = React.useState<number | null>(null);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (user?.role === 'admin' || user?.role === 'manager') {
         router.push('/admin/dashboard');
         success('Returned to Dashboard');
     } else {
+        try {
+          await api.post('/logout');
+        } catch (err) {
+          console.error('Logout error:', err);
+        }
         dispatch(logout());
         success('Session ended');
         router.replace('/login');
@@ -228,13 +233,17 @@ export default function PosPage() {
       <aside className="w-full md:w-[360px] lg:w-[420px] bg-white border-l border-outline-variant/10 flex flex-col shadow-2xl relative z-20">
           <div className="p-5 border-b border-outline-variant/10 space-y-4">
               <div className="flex bg-slate-100 p-1 rounded-xl">
-                  {(['dine_in', 'takeaway', 'delivery'] as const).map(m => (
+                  {([
+                    { value: 'dine_in',  label: '🪑 Dine In'  },
+                    { value: 'takeaway', label: '🛍️ Takeaway' },
+                    { value: 'delivery', label: '🛵 Delivery'  },
+                  ] as const).map(m => (
                       <button 
-                        key={m}
-                        onClick={() => setFulfillmentMethod(m)}
-                        className={`flex-1 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${fulfillmentMethod === m ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                        key={m.value}
+                        onClick={() => setFulfillmentMethod(m.value)}
+                        className={`flex-1 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all ${fulfillmentMethod === m.value ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
                       >
-                          {m.replace('_', ' ')}
+                          {m.label}
                       </button>
                   ))}
               </div>

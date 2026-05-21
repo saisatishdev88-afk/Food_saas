@@ -23,6 +23,8 @@ Route::post('/login/clear-sessions', [AuthController::class, 'clearSessions']);
 Route::get('/public/tenant/{domain}', [\App\Http\Controllers\Api\SuperAdminController::class, 'publicTenantInfo']);
 Route::get('/public/menu/{domain}', [\App\Http\Controllers\Api\MenuController::class, 'publicIndex']);
 Route::post('/public/orders/{domain}', [\App\Http\Controllers\Api\OrderController::class, 'publicStore']);
+Route::post('/public/orders/{domain}/payment-init', [\App\Http\Controllers\Api\RazorpayController::class, 'initiatePayment']);
+Route::post('/public/orders/{domain}/payment-verify', [\App\Http\Controllers\Api\RazorpayController::class, 'verifyPayment']);
 Route::get('/public/table/{domain}/{tableNumber}/status', [\App\Http\Controllers\Api\TableController::class, 'checkStatus']);
 
 // Social Group Ordering
@@ -100,6 +102,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // WhatsApp Ordering
         Route::post('/whatsapp/config', [\App\Http\Controllers\Api\WhatsAppController::class, 'updateConfig']);
 
+        // Razorpay Payment Settings
+        Route::get('/razorpay/config', [\App\Http\Controllers\Api\RazorpayController::class, 'getConfig']);
+        Route::post('/razorpay/config', [\App\Http\Controllers\Api\RazorpayController::class, 'updateConfig']);
+
+        // POS Payment Routes
+        Route::post('/orders/payment-init', [\App\Http\Controllers\Api\RazorpayController::class, 'initiatePayment']);
+        Route::post('/orders/payment-verify', [\App\Http\Controllers\Api\RazorpayController::class, 'verifyPayment']);
+        Route::post('/orders/{order}/payment-init', [\App\Http\Controllers\Api\RazorpayController::class, 'initiatePOSOrderPayment']);
+        Route::post('/orders/{order}/payment-verify', [\App\Http\Controllers\Api\RazorpayController::class, 'verifyPOSOrderPayment']);
+
         // Support Tickets
         Route::get('/tickets', [TicketController::class, 'index']);
         Route::post('/tickets', [TicketController::class, 'store']);
@@ -121,4 +133,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    
+    // Session Management
+    Route::get('/sessions', [\App\Http\Controllers\Api\AuthController::class, 'getSessions']);
+    Route::delete('/sessions/{tokenId}', [\App\Http\Controllers\Api\AuthController::class, 'revokeSession']);
+    Route::delete('/sessions-all', [\App\Http\Controllers\Api\AuthController::class, 'revokeAllSessions']);
+    
+    // Auth Logout
+    Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
 });

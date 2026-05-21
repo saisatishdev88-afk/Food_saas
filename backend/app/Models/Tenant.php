@@ -17,6 +17,7 @@ class Tenant extends Model
         'plan_type',
         'modules',
         'whatsapp_config',
+        'razorpay_config',
         'subscription_expires_at',
         'subscription_grace_days',
         'is_first_subscription',
@@ -25,6 +26,7 @@ class Tenant extends Model
     protected $casts = [
         'modules' => 'array',
         'whatsapp_config' => 'array',
+        'razorpay_config' => 'array',
         'subscription_expires_at' => 'datetime',
         'subscription_grace_days' => 'integer',
         'is_first_subscription' => 'boolean',

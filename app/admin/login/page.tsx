@@ -32,10 +32,10 @@ export default function AdminLoginPage() {
       const { data } = await api.post('/admin/login', { email, password });
       
       // Store token for the axios client interceptor
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('role', data.role);
-      localStorage.setItem('loginTime', Date.now().toString());
+      localStorage.setItem('saas_token', data.token);
+      localStorage.setItem('saas_user', JSON.stringify(data.user));
+      localStorage.setItem('saas_role', data.role);
+      localStorage.setItem('saas_loginTime', Date.now().toString());
 
       dispatch(setCredentials({
         user: data.user,
@@ -46,6 +46,21 @@ export default function AdminLoginPage() {
 
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Authentication failed';
+      setError(msg);
+      toastError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClearSessions = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await api.post('/login/clear-sessions', { email, password });
+      success('Other sessions cleared successfully. You may now log in.');
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Failed to clear sessions';
       setError(msg);
       toastError(msg);
     } finally {
@@ -80,8 +95,17 @@ export default function AdminLoginPage() {
 
           <form className="space-y-6" onSubmit={handleLogin}>
             {error && (
-              <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 text-center">
-                {error}
+              <div className="p-4 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 text-center flex flex-col gap-3">
+                <span className="font-semibold">{error}</span>
+                {error.toLowerCase().includes('device limit reached') && (
+                  <Button 
+                    type="button" 
+                    onClick={handleClearSessions}
+                    className="w-full bg-red-100 text-red-700 hover:bg-red-200 border border-red-200 font-bold shadow-sm"
+                  >
+                    Clear Other Sessions
+                  </Button>
+                )}
               </div>
             )}
             

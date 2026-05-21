@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToTenant;
 
-class Order extends Model
+class TempOrder extends Model
 {
     use HasFactory, BelongsToTenant;
 
@@ -14,8 +14,10 @@ class Order extends Model
         'tenant_id',
         'user_id',
         'customer_phone',
+        'customer_name',
         'order_number',
         'type',
+        'fulfillment_type',
         'total_amount',
         'tax_amount',
         'service_charge',
@@ -23,9 +25,9 @@ class Order extends Model
         'payment_status',
         'payment_method',
         'payment_type',
-        'fulfillment_type',
         'table_number',
         'notes',
+        'razorpay_order_id',
         'payment_response'
     ];
 
@@ -35,17 +37,11 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(TempOrderItem::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function restaurantTable()
-    {
-        return $this->belongsTo(RestaurantTable::class, 'table_number', 'table_number')
-                    ->where('tenant_id', $this->tenant_id);
     }
 }

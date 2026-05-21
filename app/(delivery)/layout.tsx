@@ -1,7 +1,13 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 export default function DeliveryLayout({ children }: { children: React.ReactNode }) {
+  const { user } = useSelector((state: RootState) => state.auth);
+
   return (
     <div className="bg-background text-on-background min-h-screen flex overflow-hidden">
       {/* SideNavBar */}

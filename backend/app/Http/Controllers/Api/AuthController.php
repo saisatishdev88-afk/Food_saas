@@ -39,10 +39,11 @@ class AuthController extends Controller
             }
         }
 
-        // 2-Device Limit Check
-        if ($user->tokens()->count() >= 2) {
+        // Device Limit Check
+        $deviceLimit = $user->role === 'superadmin' ? 2 : 4;
+        if ($user->tokens()->count() >= $deviceLimit) {
             return response()->json([
-                'message' => 'Device limit reached. You are logged in on 2 devices. Please logout from other devices first.',
+                'message' => "Device limit reached. You are logged in on {$deviceLimit} devices. Please logout from other devices first.",
                 'sessions' => $user->tokens->map(function ($token) {
                     return [
                         'id' => $token->id,
@@ -99,5 +100,33 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
+    }
+
+    public function getSessions(Request $request)
+    {
+        $sessions = $request->user()->tokens->map(function ($token) {
+            return [
+                'id' => $token->id,
+                'device' => $token->name,
+                'ip_address' => $token->ip_address,
+                'user_agent' => $token->user_agent,
+                'last_activity' => $token->last_active_at ? $token->last_active_at->diffForHumans() : 'Unknown',
+                'created_at' => $token->created_at
+            ];
+        });
+        return response()->json(['sessions' => $sessions]);
+    }
+
+    public function revokeSession(Request $request, $tokenId)
+    {
+        $request->user()->tokens()->where('id', $tokenId)->delete();
+        return response()->json(['message' => 'Session terminated']);
+    }
+
+    public function revokeAllSessions(Request $request)
+    {
+        $currentTokenId = $request->user()->currentAccessToken()->id;
+        $request->user()->tokens()->where('id', '!=', $currentTokenId)->delete();
+        return response()->json(['message' => 'All other sessions terminated']);
     }
 }

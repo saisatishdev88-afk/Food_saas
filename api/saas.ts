@@ -6,6 +6,7 @@ export interface SaaSStats {
   total_users: number;
   global_revenue: number;
   system_health: string;
+  ai_forecast?: any;
 }
 
 export interface Tenant {

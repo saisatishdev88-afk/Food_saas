@@ -19,8 +19,13 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   const queryClient = useQueryClient();
   const { success, error } = useToast();
 
-  const handleLogout = (e: React.MouseEvent) => {
+  const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
+    try {
+      await api.post('/logout');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
     dispatch(logout());
     success('Signed out from FoodSoul.');
     router.replace('/login');
@@ -68,6 +73,7 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   const navItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
     { name: 'Staff Manager', href: '/admin/staff', icon: 'group' },
+    { name: 'Devices', href: '/admin/devices', icon: 'devices' },
     { name: 'Menu Editor', href: '/admin/menu', icon: 'restaurant_menu' },
     { name: 'Order History', href: '/admin/orders', icon: 'receipt_long' },
     { name: 'Point of Sale', href: '/pos', icon: 'point_of_sale' },
@@ -80,6 +86,7 @@ export default function TenantAdminLayout({ children }: { children: React.ReactN
   if (modules.shift_management) navItems.push({ name: 'Shift Tracking', href: '/admin/shifts', icon: 'schedule' });
   if (modules.ai_assistant) navItems.push({ name: 'AI Assistant', href: '/admin/ai-assistant', icon: 'smart_toy' });
   if (modules.whatsapp_ordering) navItems.push({ name: 'WhatsApp', href: '/admin/whatsapp', icon: 'chat' });
+  navItems.push({ name: 'Razorpay Settings', href: '/admin/razorpay', icon: 'account_balance' });
   navItems.push({ name: 'Subscription', href: '/admin/subscription', icon: 'payments' });
   navItems.push({ name: 'Help & Support', href: '/admin/tickets', icon: 'help_outline' });
 

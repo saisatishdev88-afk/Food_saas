@@ -11,6 +11,8 @@ export interface MenuItem {
   is_available: boolean;
   is_veg: boolean;
   prep_time: number | null;
+  is_whatsapp_visible?: boolean;
+  ingredients?: any[];
 }
 
 export interface Category {

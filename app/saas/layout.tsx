@@ -14,8 +14,13 @@ export default function SaasLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const handleLogout = (e: React.MouseEvent) => {
+  const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
+    try {
+      await import('@/api/client').then(module => module.default.post('/logout'));
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
     dispatch(logout());
     router.replace('/login');
   };

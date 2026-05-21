@@ -11,8 +11,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleLogout = (e: React.MouseEvent) => {
+  const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
+    try {
+      await import('@/api/client').then(m => m.default.post('/logout'));
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
     dispatch(logout());
     router.replace('/admin/login');
   };
@@ -56,6 +61,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin/staff" className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98">
               <span className="material-symbols-outlined">group</span>
               <span className="font-sans text-sm uppercase tracking-wider font-semibold">Staff Manager</span>
+            </Link>
+            <Link href="/admin/devices" className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98">
+              <span className="material-symbols-outlined">devices</span>
+              <span className="font-sans text-sm uppercase tracking-wider font-semibold">Devices</span>
             </Link>
             <Link href="/admin/whatsapp" className="flex items-center gap-4 text-on-surface px-6 py-4 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-full transition-all active:scale-98">
               <span className="material-symbols-outlined text-green-500">chat</span>

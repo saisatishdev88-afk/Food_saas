@@ -9,10 +9,13 @@ export default function AuthHydrator({ children }: { children: React.ReactNode }
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    const userStr = localStorage.getItem('user');
-    const loginTime = localStorage.getItem('loginTime');
+    const isSaas = window.location.pathname.startsWith('/saas') || window.location.pathname.startsWith('/admin/login');
+    const prefix = isSaas ? 'saas_' : 'tenant_';
+    
+    const token = localStorage.getItem(`${prefix}token`);
+    const role = localStorage.getItem(`${prefix}role`);
+    const userStr = localStorage.getItem(`${prefix}user`);
+    const loginTime = localStorage.getItem(`${prefix}loginTime`);
     
     // 8 hours in milliseconds
     const EIGHT_HOURS = 8 * 60 * 60 * 1000;

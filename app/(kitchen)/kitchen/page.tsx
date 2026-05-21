@@ -17,7 +17,7 @@ export default function KitchenPage() {
   const dispatch = useDispatch();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, role } = useSelector((state: RootState) => state.auth);
   const { success, error } = useToast();
   const [activeFilter, setActiveFilter] = React.useState<'active' | 'ready' | 'all'>('active');
   const [itemFilter, setItemFilter] = React.useState<string | null>(null);
@@ -113,9 +113,27 @@ export default function KitchenPage() {
     }
   });
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.replace('/login');
+  const isAdminOrManager = role === 'admin' || role === 'manager' || role === 'superadmin' || user?.role === 'admin' || user?.role === 'manager' || user?.role === 'superadmin';
+
+  const handleLogout = async () => {
+    if (isAdminOrManager) {
+      if (role === 'superadmin' || user?.role === 'superadmin') {
+        router.push('/saas');
+        success('Returned to SaaS Dashboard');
+      } else {
+        router.push('/admin/dashboard');
+        success('Returned to Dashboard');
+      }
+    } else {
+      try {
+        await api.post('/logout');
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+      dispatch(logout());
+      success('Session ended');
+      router.replace('/login');
+    }
   };
 
   // Base filtered orders for status only, used for calculating available items
@@ -189,8 +207,17 @@ export default function KitchenPage() {
                     {shiftStatus?.is_clocked_in ? 'Clock Out' : 'Clock In'}
                   </button>
                 )}
-                <button title="Log Out" onClick={handleLogout} className="w-10 h-10 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-error hover:bg-error/5 transition-all ml-2">
-                    <span className="material-symbols-outlined text-2xl">logout</span>
+                <button 
+                  title={isAdminOrManager ? "Back to Dashboard" : "Log Out"} 
+                  onClick={handleLogout} 
+                  className={cn(
+                    "w-10 h-10 flex items-center justify-center rounded-xl text-on-surface-variant transition-all ml-2",
+                    isAdminOrManager ? "hover:text-primary hover:bg-primary/5" : "hover:text-error hover:bg-error/5"
+                  )}
+                >
+                    <span className="material-symbols-outlined text-2xl">
+                      {isAdminOrManager ? "arrow_back" : "logout"}
+                    </span>
                 </button>
             </div>
             
@@ -237,11 +264,15 @@ export default function KitchenPage() {
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-primary opacity-40">#{order.order_number}</span>
-                                    {order.type === 'online' && <span className="bg-blue-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">QR Order</span>}
+                                    {order.type === 'online' && <span className="bg-blue-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">Online</span>}
                                     {order.type === 'whatsapp' && <span className="bg-green-500 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase">WhatsApp</span>}
                                 </div>
                                 <h2 className="text-2xl font-black text-on-surface font-headline italic uppercase leading-none">
-                                    {order.table_number ? `TABLE ${order.table_number}` : 'TAKEAWAY'}
+                                    {order.fulfillment_type === 'dine_in'
+                                        ? (order.table_number ? `Table ${order.table_number}` : 'Dine In')
+                                        : order.fulfillment_type === 'delivery'
+                                        ? '🛵 Delivery'
+                                        : '🛍️ Takeaway'}
                                 </h2>
                             </div>
                             <div className={cn("w-3 h-3 rounded-full animate-pulse", order.status === 'pending' ? "bg-primary" : "bg-emerald-500")}></div>
